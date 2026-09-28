@@ -50,7 +50,7 @@
 
         <!-- Footer Mini -->
         <footer class="w-full text-center py-4 px-4 text-[11px] sm:text-xs text-slate-400 border-t border-slate-200/50">
-            &copy; {{ date('Y') }} RuangKelas &bull; Platform Belajar & Mengajar di Semua Sistem Operasi
+            &copy; {{ date('Y') }} RuangKelas &bull; Platform Belajar & Mengajar
         </footer>
     </body>
 </html>

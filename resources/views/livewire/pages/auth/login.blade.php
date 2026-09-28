@@ -83,7 +83,7 @@ new #[Layout('layouts.guest')] class extends Component
         @if($demoSelected)
             <div class="p-2.5 sm:p-3 rounded-xl {{ $demoSelected === 'guru' ? 'bg-indigo-50 text-indigo-900 border-indigo-200' : 'bg-emerald-50 text-emerald-900 border-emerald-200' }} border text-xs flex items-center justify-between gap-2 transition-all">
                 <span class="truncate font-medium">
-                    Demo <strong>{{ $demoSelected === 'guru' ? 'Guru' : 'Siswa' }}</strong> aktif
+                    Akun <strong>{{ $demoSelected === 'guru' ? 'Guru' : 'Siswa' }}</strong>
                 </span>
                 <button type="button"
                         wire:click="clearDemo"
@@ -101,7 +101,7 @@ new #[Layout('layouts.guest')] class extends Component
                 <label for="email" class="block text-xs sm:text-sm font-bold text-slate-700">
                     Email
                 </label>
-                <input wire:model.live="form.email"
+                <input wire:model="form.email"
                        id="email"
                        type="email"
                        name="email"
@@ -176,14 +176,15 @@ new #[Layout('layouts.guest')] class extends Component
             <div class="pt-1.5">
                 <button type="submit"
                         wire:loading.attr="disabled"
+                        wire:target="login"
                         class="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm sm:text-base py-3 px-5 rounded-xl sm:rounded-2xl shadow-lg shadow-indigo-200/80 hover:shadow-indigo-300 transition-all transform active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer">
-                    <svg wire:loading xmlns="http://www.w3.org/2000/svg" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <svg wire:loading wire:target="login" xmlns="http://www.w3.org/2000/svg" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
 
-                    <span wire:loading.remove>Masuk</span>
-                    <span wire:loading>Memproses...</span>
+                    <span wire:loading.remove wire:target="login">Masuk</span>
+                    <span wire:loading wire:target="login">Memproses...</span>
                 </button>
             </div>
         </form>
@@ -201,30 +202,45 @@ new #[Layout('layouts.guest')] class extends Component
     </div>
 
     <!-- ============================================================ -->
-    <!-- GRID DEMO BERSIH & SEDERHANA (CLEAN MINIMALIS)               -->
+    <!-- GRID DEMO BERSIH & TAMPIL AKUN + PASSWORD                    -->
     <!-- ============================================================ -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border border-slate-200/80 shadow-xs space-y-2">
-        <p class="text-[11px] font-semibold text-slate-500 text-center">Akun Uji Coba (Demo)</p>
+    <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-3.5 sm:p-4 border border-slate-200/90 shadow-xs space-y-2.5">
+        <div class="flex items-center justify-between text-[11px] text-slate-500 font-semibold px-0.5">
+            <span>Akun Demo</span>
+            <span class="text-slate-400 font-normal">Klik untuk isi otomatis</span>
+        </div>
         
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <!-- Demo Siswa -->
             <button type="button"
                     wire:click="fillDemo('siswa')"
-                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer {{ $demoSelected === 'siswa' ? 'bg-emerald-50 text-emerald-700 border-emerald-300 ring-2 ring-emerald-100 shadow-2xs' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200' }}">
-                <span>🎒 Siswa</span>
-                @if($demoSelected === 'siswa')
-                    <span class="text-emerald-600 font-bold">✓</span>
-                @endif
+                    class="p-2.5 rounded-xl border text-left transition-all cursor-pointer {{ $demoSelected === 'siswa' ? 'bg-emerald-50 border-emerald-300 ring-2 ring-emerald-100 shadow-2xs' : 'bg-slate-50/70 hover:bg-slate-100/90 border-slate-200' }}">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-800">Akun Siswa</span>
+                    @if($demoSelected === 'siswa')
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">Aktif ✓</span>
+                    @endif
+                </div>
+                <div class="mt-1 space-y-0.5 text-[11px] font-mono text-slate-600">
+                    <p class="truncate"><span class="text-slate-400 font-sans">Email:</span> siswa@ruangkelas.test</p>
+                    <p><span class="text-slate-400 font-sans">Pw:</span> password</p>
+                </div>
             </button>
 
             <!-- Demo Guru -->
             <button type="button"
                     wire:click="fillDemo('guru')"
-                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer {{ $demoSelected === 'guru' ? 'bg-indigo-50 text-indigo-700 border-indigo-300 ring-2 ring-indigo-100 shadow-2xs' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200' }}">
-                <span>👨‍🏫 Guru</span>
-                @if($demoSelected === 'guru')
-                    <span class="text-indigo-600 font-bold">✓</span>
-                @endif
+                    class="p-2.5 rounded-xl border text-left transition-all cursor-pointer {{ $demoSelected === 'guru' ? 'bg-indigo-50 border-indigo-300 ring-2 ring-indigo-100 shadow-2xs' : 'bg-slate-50/70 hover:bg-slate-100/90 border-slate-200' }}">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-800">Akun Guru</span>
+                    @if($demoSelected === 'guru')
+                        <span class="text-[10px] font-bold text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded">Aktif ✓</span>
+                    @endif
+                </div>
+                <div class="mt-1 space-y-0.5 text-[11px] font-mono text-slate-600">
+                    <p class="truncate"><span class="text-slate-400 font-sans">Email:</span> guru@ruangkelas.test</p>
+                    <p><span class="text-slate-400 font-sans">Pw:</span> password</p>
+                </div>
             </button>
         </div>
     </div>

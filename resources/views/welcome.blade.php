@@ -20,16 +20,27 @@
 
         <!-- Scripts & Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Dynamic Header Glow & Blur Style -->
+        <style>
+            #main-header.header-scrolled {
+                background-color: rgba(238, 242, 255, 0.82) !important;
+                backdrop-filter: blur(18px) saturate(180%);
+                -webkit-backdrop-filter: blur(18px) saturate(180%);
+                border-bottom-color: rgba(199, 210, 254, 0.85) !important;
+                box-shadow: 0 10px 30px -5px rgba(79, 70, 229, 0.16), 0 4px 15px -3px rgba(99, 102, 241, 0.12) !important;
+            }
+        </style>
     </head>
     <body class="font-sans antialiased text-slate-800 bg-white selection:bg-indigo-600 selection:text-white relative overflow-x-hidden min-h-screen">
 
         <!-- ============================================================ -->
-        <!-- NAVBAR: CLEAN & MODERN (TEMA SOFT INDIGO TINT - MOBILE READY) -->
+        <!-- NAVBAR: MODERN DYNAMIC GLOW (TEMA INDIGO AKTIF & RESPONSIVE) -->
         <!-- ============================================================ -->
-        <header class="sticky top-0 z-50 bg-indigo-50 border-b border-indigo-100 shadow-xs transition-all duration-300">
-            <div class="w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between h-14 sm:h-[70px]">
+        <header id="main-header" class="sticky top-0 z-50 bg-indigo-50/95 border-b border-indigo-100/90 transition-all duration-300">
+            <div class="w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between h-14 sm:h-[68px]">
                 
-                <!-- 1. POJOK KIRI: ICON & TEKS BRAND (TIDAK ADA APA-APA SAAT DIKLIK) -->
+                <!-- 1. POJOK KIRI: ICON & TEKS BRAND (VERSI SEBELUMNYA - CLEAN NON-CLICKABLE) -->
                 <div class="inline-flex items-center gap-2 sm:gap-2.5 select-none cursor-default">
                     <div class="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-sm shadow-indigo-200 shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -37,25 +48,25 @@
                             <path d="M4.32 10.874A11.003 11.003 0 0010 13c2.478 0 4.67-.818 6.42-2.126l.83.356a1 1 0 01.598.924v3.846a1 1 0 01-.598.924l-7 3a1 1 0 01-.804 0l-7-3a1 1 0 01-.598-.924v-3.846a1 1 0 01.598-.924l.872-.376z" />
                         </svg>
                     </div>
-                    <span class="text-xl sm:text-2xl lg:text-[26px] font-black tracking-tight text-slate-900 leading-none">
+                    <span class="text-xl sm:text-2xl lg:text-[25px] font-black tracking-tight text-slate-900 leading-none">
                         Ruang<span class="text-indigo-600">Kelas</span>
                     </span>
                 </div>
 
-                <!-- 2. POJOK KANAN: TOMBOL AKSI CLEAN MODERN -->
-                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                <!-- 2. POJOK KANAN: TOMBOL AKSI CLEAN & RESPONSIVE -->
+                <div class="flex items-center shrink-0">
                     @auth
-                        <a href="{{ route('dashboard') }}" wire:navigate class="inline-flex items-center gap-1.5 sm:gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-xs transition active:scale-95">
+                        <a href="{{ route('dashboard') }}" wire:navigate class="group inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-xs hover:shadow-md hover:shadow-indigo-200/60 border border-indigo-500/30 transition-all duration-200 transform active:scale-95 touch-manipulation select-none">
                             <span>Buka Kelas</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-200 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
                         </a>
                     @else
-                        <a href="{{ route('login') }}" wire:navigate class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl shadow-sm shadow-indigo-200 hover:shadow-indigo-300 transition transform active:scale-95">
+                        <a href="{{ route('login') }}" wire:navigate class="group inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-xs hover:shadow-md hover:shadow-indigo-200/60 border border-indigo-500/30 transition-all duration-200 transform active:scale-95 touch-manipulation select-none">
                             <span>Masuk</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-200 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
                         </a>
                     @endauth
@@ -120,98 +131,106 @@
 
                     </div>
 
-                    <!-- Right Professional Showcase Card (Mobile-Responsive) -->
+                    <!-- Right Professional Showcase Card (Mobile-Responsive & Wow Aesthetic) -->
                     <div class="lg:col-span-6 w-full">
-                        <div class="relative">
+                        <div class="relative group">
                             
-                            <!-- Subtle Glow Layer -->
-                            <div class="absolute -inset-1.5 bg-gradient-to-tr from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl sm:rounded-[32px] blur-xl -z-10"></div>
+                            <!-- Ambient Multi-Layer Glow Effect -->
+                            <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl sm:rounded-[36px] opacity-20 blur-2xl group-hover:opacity-30 transition duration-1000 -z-10"></div>
+                            <div class="absolute -top-6 -right-6 w-32 h-32 bg-indigo-400/20 rounded-full blur-2xl -z-10"></div>
+                            <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-purple-400/20 rounded-full blur-2xl -z-10"></div>
 
-                            <!-- Main Classroom Card -->
-                            <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-xl shadow-slate-200/60 border border-slate-200/80 space-y-4 sm:space-y-5">
+                            <!-- Main Glassmorphism Classroom Showcase Card -->
+                            <div class="bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-2xl shadow-indigo-950/10 border border-slate-200/90 space-y-5 relative overflow-hidden">
                                 
+                                <!-- Decorative Top Subtle Accent Line -->
+                                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+
                                 <!-- Card Header: Classroom Info -->
-                                <div class="flex items-start justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100">
-                                    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                                        <div class="h-9 w-9 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-base sm:text-lg shadow-2xs shrink-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                <div class="flex items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-300/50 shrink-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                             </svg>
                                         </div>
                                         <div class="min-w-0">
-                                            <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                                                <h4 class="font-bold text-sm sm:text-base text-slate-900 leading-snug truncate">Matematika Dasar X</h4>
-                                                <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                                    Aktif
-                                                </span>
-                                            </div>
-                                            <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Pak Guru Budi &bull; Kelas X-A</p>
+                                            <h3 class="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight leading-snug">Matematika Dasar</h3>
                                         </div>
                                     </div>
-                                    <div class="text-right shrink-0">
-                                        <span class="text-[9px] sm:text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">Kode</span>
-                                        <span class="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[11px] sm:text-xs font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 inline-block mt-0.5">
-                                            MTK10A
-                                        </span>
+                                    <div class="shrink-0 text-right">
+                                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/90 text-xs shadow-2xs transition-colors">
+                                            <span class="text-slate-400 font-semibold text-[11px] uppercase tracking-wider">Kode</span>
+                                            <span class="font-mono font-black text-indigo-600 tracking-widest text-xs">MTK10A</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Progress Overview Card -->
-                                <div class="bg-slate-50/80 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-200/70 space-y-1.5 sm:space-y-2">
-                                    <div class="flex items-center justify-between text-xs">
-                                        <span class="font-bold text-slate-700">Kemajuan Pembelajaran</span>
-                                        <span class="font-bold text-indigo-600 text-[11px] sm:text-xs" id="hero-progress-text">67% Berjalan</span>
+                                <!-- Progress Overview Card (Stunning Visual Elevation) -->
+                                <div class="bg-gradient-to-br from-slate-50/90 via-indigo-50/20 to-purple-50/20 rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs space-y-2.5">
+                                    <div class="flex items-center justify-between text-xs sm:text-sm">
+                                        <span class="font-bold text-slate-800">Kemajuan Pembelajaran</span>
+                                        <span class="inline-flex items-center gap-1 font-bold text-xs sm:text-sm px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-2xs transition-all duration-300" id="hero-progress-text">
+                                            <span>67% Selesai</span>
+                                        </span>
                                     </div>
-                                    <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                                        <div id="hero-progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-500" style="width: 67%"></div>
+                                    
+                                    <!-- Dynamic Progress Bar with Sheen -->
+                                    <div class="w-full bg-slate-200/70 rounded-full h-2.5 overflow-hidden p-0.5 border border-slate-200/50">
+                                        <div id="hero-progress-bar" class="bg-gradient-to-r from-indigo-600 to-purple-600 h-1.5 rounded-full transition-all duration-700 shadow-sm" style="width: 67%"></div>
                                     </div>
-                                    <p class="text-[10px] sm:text-[11px] text-slate-500" id="hero-progress-hint">
-                                        Klik modul kuis ke-3 di bawah untuk simulasi langsung
+
+                                    <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-normal" id="hero-progress-hint">
+                                        2 dari 3 materi telah selesai. Klik kuis ke-3 untuk evaluasi bab.
                                     </p>
                                 </div>
 
-                                <!-- Lessons List -->
-                                <div class="space-y-2 sm:space-y-2.5 text-xs">
-                                    <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition">
-                                        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-2">
-                                            <span class="h-5 w-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs border border-emerald-200 shrink-0">✓</span>
-                                            <span class="font-semibold text-slate-800 text-xs truncate">1. Konsep Dasar Persamaan</span>
+                                <!-- Lessons List (Modular Interactive Cards) -->
+                                <div class="space-y-2.5 text-xs sm:text-sm">
+                                    <!-- Lesson 1 -->
+                                    <div class="flex items-center justify-between p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/80 bg-white hover:border-indigo-200 hover:shadow-xs transition-all duration-200 group/item">
+                                        <div class="flex items-center gap-3 min-w-0 pr-2">
+                                            <span class="h-6 w-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200/80 shadow-2xs">
+                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </span>
+                                            <span class="font-semibold text-slate-800 text-xs sm:text-sm truncate group-hover/item:text-indigo-600 transition-colors">1. Konsep Dasar Persamaan</span>
                                         </div>
-                                        <span class="text-[10px] sm:text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md shrink-0">Selesai</span>
+                                        <span class="text-[11px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-lg shrink-0">Selesai</span>
                                     </div>
 
-                                    <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition">
-                                        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-2">
-                                            <span class="h-5 w-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs border border-emerald-200 shrink-0">✓</span>
-                                            <span class="font-semibold text-slate-800 text-xs truncate">2. Video Pembahasan & Latihan</span>
+                                    <!-- Lesson 2 -->
+                                    <div class="flex items-center justify-between p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/80 bg-white hover:border-indigo-200 hover:shadow-xs transition-all duration-200 group/item">
+                                        <div class="flex items-center gap-3 min-w-0 pr-2">
+                                            <span class="h-6 w-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200/80 shadow-2xs">
+                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </span>
+                                            <span class="font-semibold text-slate-800 text-xs sm:text-sm truncate group-hover/item:text-indigo-600 transition-colors">2. Video Pembahasan & Latihan</span>
                                         </div>
-                                        <span class="text-[10px] sm:text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md shrink-0">Selesai</span>
+                                        <span class="text-[11px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-lg shrink-0">Selesai</span>
                                     </div>
 
-                                    <!-- Interactive Check Button -->
+                                    <!-- Lesson 3: Interactive Quiz (Prestigious Highlight) -->
                                     <button type="button"
                                             id="hero-quiz-btn"
-                                            class="w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl border border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50/70 transition text-left cursor-pointer group">
-                                        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-2">
-                                            <span id="hero-quiz-num" class="h-5 w-5 rounded-full flex items-center justify-center font-bold text-xs bg-indigo-100 text-indigo-600 border border-indigo-200 shrink-0">3</span>
-                                            <span class="font-bold text-indigo-950 text-xs truncate">3. Kuis Evaluasi Pemahaman Bab</span>
+                                            class="w-full flex items-center justify-between p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition-all duration-300 text-left cursor-pointer group/quiz border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50/80 hover:shadow-xs">
+                                        <div class="flex items-center gap-3 min-w-0 pr-2">
+                                            <span id="hero-quiz-badge" class="h-6 w-6 rounded-full flex items-center justify-center shrink-0 border bg-indigo-100 text-indigo-600 border-indigo-200 shadow-2xs transition-colors">
+                                                <svg id="hero-quiz-check-svg" class="hidden w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                <span id="hero-quiz-num" class="text-xs font-black text-indigo-600">3</span>
+                                            </span>
+                                            <span class="font-bold text-slate-900 text-xs sm:text-sm truncate group-hover/quiz:text-indigo-600 transition-colors">3. Kuis Evaluasi Pemahaman Bab</span>
                                         </div>
-                                        <span id="hero-quiz-status" class="text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 rounded-lg bg-indigo-600 text-white group-hover:bg-indigo-700 transition shrink-0">
-                                            Klik Selesaikan
+                                        <span id="hero-quiz-status" class="text-[11px] font-bold px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all shrink-0">
+                                            Mulai Kuis
                                         </span>
                                     </button>
                                 </div>
-
-                                <!-- Card Footer Quick Stats -->
-                                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-0 text-[11px] sm:text-xs text-slate-500">
-                                    <div class="flex items-center gap-1.5 font-medium">
-                                        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                                        <span>32 Siswa Aktif Terhubung</span>
-                                    </div>
-                                    <span class="font-semibold text-slate-700">Rata-rata Kuis: <strong class="text-indigo-600">88.5</strong></span>
-                                </div>
-
                             </div>
                         </div>
                     </div>
@@ -526,38 +545,77 @@
                     });
                 });
 
-                // 2. HERO CLASSROOM SHOWCASE QUIZ BUTTON
+                // 2. HERO CLASSROOM SHOWCASE QUIZ INTERACTIVE TOGGLE
                 const quizBtn = document.getElementById('hero-quiz-btn');
                 if (quizBtn) {
                     let completed = false;
                     quizBtn.addEventListener('click', function () {
                         completed = !completed;
                         const statusText = document.getElementById('hero-quiz-status');
-                        const badgeNumber = document.getElementById('hero-quiz-num');
+                        const badgeSpan = document.getElementById('hero-quiz-badge');
+                        const checkSvg = document.getElementById('hero-quiz-check-svg');
+                        const numSpan = document.getElementById('hero-quiz-num');
                         const progressText = document.getElementById('hero-progress-text');
                         const progressBar = document.getElementById('hero-progress-bar');
                         const progressHint = document.getElementById('hero-progress-hint');
 
                         if (completed) {
-                            this.className = 'w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl border transition text-left cursor-pointer group border-emerald-200 bg-emerald-50/50';
-                            statusText.textContent = 'Skor 100 ✓';
-                            statusText.className = 'text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-700';
-                            badgeNumber.textContent = '✓';
-                            badgeNumber.className = 'h-5 w-5 rounded-full flex items-center justify-center font-bold text-xs bg-emerald-100 text-emerald-600 border border-emerald-300';
-                            if (progressText) progressText.textContent = '100% Selesai 🎉';
-                            if (progressBar) progressBar.style.width = '100%';
-                            if (progressHint) progressHint.textContent = 'Semua bab modul telah berhasil diselesaikan!';
+                            this.className = 'w-full flex items-center justify-between p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition-all duration-300 text-left cursor-pointer group/quiz border-emerald-200/90 bg-emerald-50/40 hover:bg-emerald-50/80 hover:shadow-xs';
+                            if (statusText) {
+                                statusText.textContent = 'Selesai';
+                                statusText.className = 'text-[11px] font-bold px-3 py-1 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs transition-all shrink-0';
+                            }
+                            if (badgeSpan) badgeSpan.className = 'h-6 w-6 rounded-full flex items-center justify-center shrink-0 border bg-emerald-100 text-emerald-600 border-emerald-300 shadow-2xs transition-colors';
+                            if (checkSvg) checkSvg.classList.remove('hidden');
+                            if (numSpan) numSpan.classList.add('hidden');
+                            if (progressText) {
+                                progressText.innerHTML = `
+                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span>100% Selesai</span>
+                                `;
+                                progressText.className = 'inline-flex items-center gap-1 font-bold text-xs sm:text-sm px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs transition-all duration-300';
+                            }
+                            if (progressBar) {
+                                progressBar.className = 'bg-gradient-to-r from-indigo-600 via-purple-600 to-emerald-500 h-1.5 rounded-full transition-all duration-700 shadow-sm';
+                                progressBar.style.width = '100%';
+                            }
+                            if (progressHint) progressHint.textContent = 'Seluruh bab modul dan evaluasi telah berhasil diselesaikan.';
                         } else {
-                            this.className = 'w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl border border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50/70 transition text-left cursor-pointer group';
-                            statusText.textContent = 'Klik Selesaikan';
-                            statusText.className = 'text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 rounded-lg bg-indigo-600 text-white group-hover:bg-indigo-700 transition';
-                            badgeNumber.textContent = '3';
-                            badgeNumber.className = 'h-5 w-5 rounded-full flex items-center justify-center font-bold text-xs bg-indigo-100 text-indigo-600 border border-indigo-200';
-                            if (progressText) progressText.textContent = '67% Berjalan';
-                            if (progressBar) progressBar.style.width = '67%';
-                            if (progressHint) progressHint.textContent = 'Klik modul kuis ke-3 di bawah untuk simulasi langsung';
+                            this.className = 'w-full flex items-center justify-between p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition-all duration-300 text-left cursor-pointer group/quiz border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50/80 hover:shadow-xs';
+                            if (statusText) {
+                                statusText.textContent = 'Mulai Kuis';
+                                statusText.className = 'text-[11px] font-bold px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all shrink-0';
+                            }
+                            if (badgeSpan) badgeSpan.className = 'h-6 w-6 rounded-full flex items-center justify-center shrink-0 border bg-indigo-100 text-indigo-600 border-indigo-200 shadow-2xs transition-colors';
+                            if (checkSvg) checkSvg.classList.add('hidden');
+                            if (numSpan) numSpan.classList.remove('hidden');
+                            if (progressText) {
+                                progressText.innerHTML = '<span>67% Selesai</span>';
+                                progressText.className = 'inline-flex items-center gap-1 font-bold text-xs sm:text-sm px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-2xs transition-all duration-300';
+                            }
+                            if (progressBar) {
+                                progressBar.className = 'bg-gradient-to-r from-indigo-600 to-purple-600 h-1.5 rounded-full transition-all duration-700 shadow-sm';
+                                progressBar.style.width = '67%';
+                            }
+                            if (progressHint) progressHint.textContent = '2 dari 3 materi telah selesai. Klik kuis ke-3 untuk evaluasi bab.';
                         }
                     });
+                }
+
+                // 3. HEADER DYNAMIC SCROLL GLOW & TRANSPARENCY
+                const mainHeader = document.getElementById('main-header');
+                if (mainHeader) {
+                    const updateHeaderGlow = () => {
+                        if (window.scrollY > 15) {
+                            mainHeader.classList.add('header-scrolled');
+                        } else {
+                            mainHeader.classList.remove('header-scrolled');
+                        }
+                    };
+                    window.addEventListener('scroll', updateHeaderGlow, { passive: true });
+                    updateHeaderGlow();
                 }
             });
         </script>

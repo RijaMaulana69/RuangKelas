@@ -194,14 +194,15 @@ new #[Layout('layouts.guest')] class extends Component
             <div class="pt-2">
                 <button type="submit"
                         wire:loading.attr="disabled"
+                        wire:target="register"
                         class="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm sm:text-base py-3 px-5 rounded-xl sm:rounded-2xl shadow-lg shadow-indigo-200/80 hover:shadow-indigo-300 transition-all transform active:scale-[0.98] disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer">
-                    <svg wire:loading xmlns="http://www.w3.org/2000/svg" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <svg wire:loading wire:target="register" xmlns="http://www.w3.org/2000/svg" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
 
-                    <span wire:loading.remove>Daftar</span>
-                    <span wire:loading>Memproses...</span>
+                    <span wire:loading.remove wire:target="register">Daftar</span>
+                    <span wire:loading wire:target="register">Memproses...</span>
                 </button>
             </div>
         </form>
