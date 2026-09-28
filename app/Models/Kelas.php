@@ -74,4 +74,9 @@ class Kelas extends Model
     {
         return $this->hasMany(Chapter::class, 'class_id')->orderBy('urutan');
     }
+
+    public function assignments(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Assignment::class, Chapter::class, 'class_id', 'chapter_id');
+    }
 }

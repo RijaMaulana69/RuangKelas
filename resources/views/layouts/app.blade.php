@@ -61,18 +61,6 @@
                 <!-- Sisi Kanan: Ikon Notifikasi Sederhana & Profil Pengguna -->
                 <div class="flex items-center gap-2.5 sm:gap-3 shrink-0 ml-4">
                     
-                    <!-- Tombol Aksi Cepat Buat Kelas (Khusus Guru) -->
-                    @if(auth()->user()->hasRole('guru'))
-                        <a href="{{ route('guru.kelas.index') }}" 
-                           wire:navigate
-                           class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm shadow-indigo-950 transition active:scale-95">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                            </svg>
-                            <span>Buat Kelas</span>
-                        </a>
-                    @endif
-
                     <!-- Ikon Notifikasi Sederhana & Rapi -->
                     <div class="relative" x-data="{ openNotif: false }" @click.away="openNotif = false">
                         <button @click="openNotif = !openNotif" 
@@ -134,35 +122,29 @@
                              class="absolute right-0 mt-2 w-64 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 py-2 z-50 overflow-hidden"
                              style="display: none;">
                             <!-- Header Profil -->
-                            <div class="px-4 py-3 border-b border-slate-100 bg-slate-50/70">
+                            <div class="px-4 py-3 border-b border-slate-100 bg-slate-50/80">
                                 <p class="font-extrabold text-sm text-slate-900 truncate">{{ auth()->user()->name }}</p>
                                 <p class="text-xs text-slate-500 truncate mt-0.5">{{ auth()->user()->email }}</p>
                             </div>
 
-                            <div class="py-1">
-                                <a href="{{ route('profile') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-indigo-600 transition">
+                            <div class="p-1.5 space-y-0.5">
+                                <a href="{{ route('profile') }}" wire:navigate class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                     Profil Akun
                                 </a>
-                                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-indigo-600 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
-                                    Beranda Utama
-                                </a>
                             </div>
 
-                            <!-- Tombol Keluar (Logout) -->
-                            <div class="pt-1 border-t border-slate-100">
+                            <!-- Tombol Keluar (Tanpa kurung) -->
+                            <div class="p-1.5 pt-1 border-t border-slate-100">
                                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                                     @csrf
-                                    <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition">
+                                    <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 transition">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                         </svg>
-                                        Keluar (Logout)
+                                        Keluar
                                     </button>
                                 </form>
                             </div>

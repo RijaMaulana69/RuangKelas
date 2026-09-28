@@ -138,6 +138,38 @@ new class extends Component {
                 </div>
             @endif
 
+            <!-- Tampilan Dokumen PDF Interaktif -->
+            @if($material->tipe === 'pdf')
+                <div class="space-y-4">
+                    <div class="p-5 sm:p-6 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xl">📄</span>
+                                <h4 class="font-bold text-amber-950 text-sm">Dokumen Modul / E-Book PDF</h4>
+                            </div>
+                            <p class="text-xs text-amber-800">Pelajari materi langsung di bawah atau unduh berkas untuk dibaca secara offline.</p>
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            @if($material->file_path)
+                                <a href="{{ asset('storage/' . $material->file_path) }}" target="_blank" download class="w-full sm:w-auto text-center bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-2">
+                                    <span>⬇️ Unduh PDF</span>
+                                </a>
+                            @elseif($material->url)
+                                <a href="{{ $material->url }}" target="_blank" class="w-full sm:w-auto text-center bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-2">
+                                    <span>Buka PDF di Tab Baru &nearr;</span>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
+                    @if($material->file_path)
+                        <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-inner bg-slate-100">
+                            <iframe src="{{ asset('storage/' . $material->file_path) }}#toolbar=1" class="w-full h-[550px] sm:h-[680px]" frameborder="0"></iframe>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
             <!-- Tampilan Link Luar -->
             @if($material->tipe === 'link' && !empty($material->url))
                 <div class="p-5 sm:p-6 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

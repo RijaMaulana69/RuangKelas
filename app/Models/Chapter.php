@@ -32,4 +32,9 @@ class Chapter extends Model
     {
         return $this->hasMany(Quiz::class, 'chapter_id')->orderBy('urutan');
     }
+
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class, 'chapter_id')->orderBy('urutan');
+    }
 }

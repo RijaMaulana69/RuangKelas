@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
 
         // Buat akun demo guru
         $guru = User::factory()->create([
-            'name' => 'Demo Guru',
+            'name' => 'Rahmat Hidayat, S.Pd.',
             'email' => 'guru@ruangkelas.test',
         ]);
         $guru->assignRole('guru');

@@ -74,4 +74,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Progress::class, 'user_id');
     }
+
+    /**
+     * Pengumpulan tugas siswa
+     */
+    public function assignmentSubmissions(): HasMany
+    {
+        return $this->hasMany(AssignmentSubmission::class, 'user_id');
+    }
 }
