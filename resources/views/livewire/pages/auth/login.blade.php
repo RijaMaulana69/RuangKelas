@@ -79,19 +79,6 @@ new #[Layout('layouts.guest')] class extends Component
         <!-- Status Sesi Flash -->
         <x-auth-session-status class="mb-2" :status="session('status')" />
 
-        <!-- Status Akun Demo Terpilih (Clean Alert) -->
-        @if($demoSelected)
-            <div class="p-2.5 sm:p-3 rounded-xl {{ $demoSelected === 'guru' ? 'bg-indigo-50 text-indigo-900 border-indigo-200' : 'bg-emerald-50 text-emerald-900 border-emerald-200' }} border text-xs flex items-center justify-between gap-2 transition-all">
-                <span class="truncate font-medium">
-                    Akun <strong>{{ $demoSelected === 'guru' ? 'Guru' : 'Siswa' }}</strong>
-                </span>
-                <button type="button"
-                        wire:click="clearDemo"
-                        class="text-[11px] font-bold text-slate-500 hover:text-slate-800 underline hover:no-underline cursor-pointer shrink-0">
-                    Bersihkan
-                </button>
-            </div>
-        @endif
 
         <!-- FORM LOGIN -->
         <form wire:submit="login" class="space-y-4">
@@ -214,32 +201,38 @@ new #[Layout('layouts.guest')] class extends Component
             <!-- Demo Siswa -->
             <button type="button"
                     wire:click="fillDemo('siswa')"
-                    class="p-2.5 rounded-xl border text-left transition-all cursor-pointer {{ $demoSelected === 'siswa' ? 'bg-emerald-50 border-emerald-300 ring-2 ring-emerald-100 shadow-2xs' : 'bg-slate-50/70 hover:bg-slate-100/90 border-slate-200' }}">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-800">Akun Siswa</span>
+                    class="p-3 rounded-xl border text-left transition-all cursor-pointer group {{ $demoSelected === 'siswa' ? 'bg-indigo-50/90 border-indigo-300 ring-2 ring-indigo-200/70 shadow-xs' : 'bg-slate-50/80 hover:bg-slate-100 border-slate-200/80' }}">
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-1.5">
+                        <span class="h-2 w-2 rounded-full {{ $demoSelected === 'siswa' ? 'bg-emerald-500' : 'bg-slate-300 group-hover:bg-slate-400' }}"></span>
+                        <span class="text-xs font-bold text-slate-900">Siswa</span>
+                    </div>
                     @if($demoSelected === 'siswa')
-                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">Aktif ✓</span>
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full">Aktif</span>
                     @endif
                 </div>
-                <div class="mt-1 space-y-0.5 text-[11px] font-mono text-slate-600">
+                <div class="space-y-0.5 text-[11px] font-mono text-slate-600">
                     <p class="truncate"><span class="text-slate-400 font-sans">Email:</span> siswa@ruangkelas.test</p>
-                    <p><span class="text-slate-400 font-sans">Pw:</span> password</p>
+                    <p><span class="text-slate-400 font-sans">Sandi:</span> password</p>
                 </div>
             </button>
 
             <!-- Demo Guru -->
             <button type="button"
                     wire:click="fillDemo('guru')"
-                    class="p-2.5 rounded-xl border text-left transition-all cursor-pointer {{ $demoSelected === 'guru' ? 'bg-indigo-50 border-indigo-300 ring-2 ring-indigo-100 shadow-2xs' : 'bg-slate-50/70 hover:bg-slate-100/90 border-slate-200' }}">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-800">Akun Guru</span>
+                    class="p-3 rounded-xl border text-left transition-all cursor-pointer group {{ $demoSelected === 'guru' ? 'bg-indigo-50/90 border-indigo-300 ring-2 ring-indigo-200/70 shadow-xs' : 'bg-slate-50/80 hover:bg-slate-100 border-slate-200/80' }}">
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-1.5">
+                        <span class="h-2 w-2 rounded-full {{ $demoSelected === 'guru' ? 'bg-indigo-600' : 'bg-slate-300 group-hover:bg-slate-400' }}"></span>
+                        <span class="text-xs font-bold text-slate-900">Guru</span>
+                    </div>
                     @if($demoSelected === 'guru')
-                        <span class="text-[10px] font-bold text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded">Aktif ✓</span>
+                        <span class="text-[10px] font-bold text-indigo-700 bg-indigo-100/90 px-2 py-0.5 rounded-full">Aktif</span>
                     @endif
                 </div>
-                <div class="mt-1 space-y-0.5 text-[11px] font-mono text-slate-600">
+                <div class="space-y-0.5 text-[11px] font-mono text-slate-600">
                     <p class="truncate"><span class="text-slate-400 font-sans">Email:</span> guru@ruangkelas.test</p>
-                    <p><span class="text-slate-400 font-sans">Pw:</span> password</p>
+                    <p><span class="text-slate-400 font-sans">Sandi:</span> password</p>
                 </div>
             </button>
         </div>

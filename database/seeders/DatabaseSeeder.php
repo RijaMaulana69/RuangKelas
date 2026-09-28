@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
 
         // Buat akun demo siswa
         $siswa = User::factory()->create([
-            'name' => 'Demo Siswa',
+            'name' => 'Siswa',
             'email' => 'siswa@ruangkelas.test',
         ]);
         $siswa->assignRole('siswa');
