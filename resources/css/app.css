@@ -12,6 +12,12 @@
         -webkit-font-smoothing: antialiased;
         -webkit-tap-highlight-color: transparent;
     }
+
+    /* Hilangkan icon reveal bawaan Edge/Windows agar tidak bentrok dengan toggle custom */
+    input::-ms-reveal,
+    input::-ms-clear {
+        display: none;
+    }
 }
 
 /* Glassmorphism Utilities */

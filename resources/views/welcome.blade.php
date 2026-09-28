@@ -10,8 +10,8 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="default">
         <meta name="apple-mobile-web-app-title" content="RuangKelas">
 
-        <title>RuangKelas — Belajar Asik, Mengajar Nggak Pakai Ribet</title>
-        <meta name="description" content="Tempat belajar online yang ringan, terstruktur per bab, dan bisa diakses dari HP, tablet, maupun laptop tanpa perlu download aplikasi.">
+        <title>RuangKelas — Belajar Asik & Nyaman di Semua Sistem Operasi</title>
+        <meta name="description" content="Platform belajar dan mengajar online yang ringan, terstruktur per bab, dan dapat digunakan dengan mulus di HP Android, iOS iPhone, Windows, macOS, maupun Chromebook tanpa perlu instalasi aplikasi.">
 
         <!-- Google Fonts: Plus Jakarta Sans -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,46 +21,40 @@
         <!-- Scripts & Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased text-slate-800 bg-white selection:bg-indigo-600 selection:text-white relative overflow-x-hidden">
+    <body class="font-sans antialiased text-slate-800 bg-white selection:bg-indigo-600 selection:text-white relative overflow-x-hidden min-h-screen">
 
         <!-- ============================================================ -->
-        <!-- HEADER FULL-WIDTH LEBIH KE POJOK SESUAI UKURAN LAYAR         -->
-        <!-- Menggunakan w-full dan px-4 sm:px-8 lg:px-12 agar pas tepi   -->
+        <!-- NAVBAR: CLEAN & MODERN (TEMA SOFT INDIGO TINT - MOBILE READY) -->
         <!-- ============================================================ -->
-        <header x-data="{ mobileOpen: false }" class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-all">
-            <div class="w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between min-h-[76px] py-2.5">
+        <header class="sticky top-0 z-50 bg-indigo-50 border-b border-indigo-100 shadow-xs transition-all duration-300">
+            <div class="w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between h-14 sm:h-[70px]">
                 
-                <!-- 1. POJOK KIRI: LOGO BRAND -->
-                <a href="/" class="flex items-center gap-3 group shrink-0">
-                    <div class="h-11 w-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-300/50 group-hover:scale-105 transition-transform duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <!-- 1. POJOK KIRI: ICON & TEKS BRAND (TIDAK ADA APA-APA SAAT DIKLIK) -->
+                <div class="inline-flex items-center gap-2 sm:gap-2.5 select-none cursor-default">
+                    <div class="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-sm shadow-indigo-200 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a10.993 10.993 0 01-1.25.949 1 1 0 101.414 1.414c.484-.484.97-1.002 1.428-1.547L10 10.155l3.158-1.29a17.07 17.07 0 001.428 1.547 1 1 0 101.414-1.414 10.993 10.993 0 01-1.25-.949l2.644-1.13a1 1 0 000-1.84l-7-3z" />
                             <path d="M4.32 10.874A11.003 11.003 0 0010 13c2.478 0 4.67-.818 6.42-2.126l.83.356a1 1 0 01.598.924v3.846a1 1 0 01-.598.924l-7 3a1 1 0 01-.804 0l-7-3a1 1 0 01-.598-.924v-3.846a1 1 0 01.598-.924l.872-.376z" />
                         </svg>
                     </div>
-                    <div>
-                        <span class="text-2xl font-black text-slate-900 tracking-tight block leading-tight">
-                            Ruang<span class="text-indigo-600">Kelas</span>
-                        </span>
-                        <span class="text-[11px] font-semibold text-slate-400 block tracking-wide">
-                            Tempat Belajar Online Ringan
-                        </span>
-                    </div>
-                </a>
+                    <span class="text-xl sm:text-2xl lg:text-[26px] font-black tracking-tight text-slate-900 leading-none">
+                        Ruang<span class="text-indigo-600">Kelas</span>
+                    </span>
+                </div>
 
-                <!-- 2. POJOK KANAN: TOMBOL AKSI -->
-                <div class="flex items-center gap-3 shrink-0">
+                <!-- 2. POJOK KANAN: TOMBOL AKSI CLEAN MODERN -->
+                <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                     @auth
-                        <a href="{{ route('dashboard') }}" wire:navigate class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-sm px-5 sm:px-6 py-2.5 rounded-2xl shadow-md shadow-indigo-200 transition transform active:scale-95">
-                            <span>Buka Kelas Saya</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <a href="{{ route('dashboard') }}" wire:navigate class="inline-flex items-center gap-1.5 sm:gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-xs transition active:scale-95">
+                            <span>Buka Kelas</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
                         </a>
                     @else
-                        <a href="{{ route('login') }}" wire:navigate class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-xs sm:text-sm px-5 sm:px-6 py-2 sm:py-2.5 rounded-2xl shadow-md shadow-indigo-200 transition transform active:scale-95">
+                        <a href="{{ route('login') }}" wire:navigate class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl shadow-sm shadow-indigo-200 hover:shadow-indigo-300 transition transform active:scale-95">
                             <span>Masuk</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
                         </a>
@@ -70,122 +64,154 @@
         </header>
 
         <!-- ============================================================ -->
-        <!-- HERO SECTION: CLEAN, WARM, HUMANIZE                         -->
+        <!-- HERO SECTION: CLEAN, MODERN & ELEGAN (MOBILE OPTIMIZED)      -->
         <!-- ============================================================ -->
-        <section class="pt-10 pb-16 sm:pt-16 sm:pb-24 overflow-hidden">
+        <section class="pt-8 pb-12 sm:pt-14 sm:pb-20 lg:pt-16 lg:pb-24 overflow-hidden bg-white">
             <div class="w-full px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
                     
                     <!-- Left Hero Content -->
-                    <div class="lg:col-span-7 text-center lg:text-left space-y-6">
-                        <!-- Friendly Badge -->
-                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100/80 shadow-2xs">
-                            <span class="text-sm">🎈</span>
-                            <span>Belajar Santai, Nilai Maksimal Tanpa Ribet</span>
-                        </div>
+                    <div class="lg:col-span-6 text-center lg:text-left space-y-4 sm:space-y-6">
 
-                        <!-- Hero Title -->
-                        <h1 class="text-3xl sm:text-5xl lg:text-[54px] font-black text-slate-900 tracking-tight leading-[1.18]">
-                            Tempat Belajar yang Nyaman, <br class="hidden sm:inline">
+                        <!-- Hero Main Title -->
+                        <h1 class="text-2xl sm:text-4xl lg:text-[50px] font-black text-slate-900 tracking-tight leading-[1.2] sm:leading-[1.16]">
+                            Belajar Asik & Nyaman, <br class="hidden sm:inline">
                             <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
-                                Tanpa Bikin Pusing.
+                                di Semua Sistem Operasi.
                             </span>
                         </h1>
 
-                        <!-- Humanized Subtitle -->
-                        <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                            Nggak perlu install aplikasi yang bikin memori HP cepat penuh. Cukup buka lewat browser di HP Android, iPhone, tablet, atau laptop. Materi tersusun rapi per bab, video jelas, dan kuisnya bikin belajar berasa seru!
+                        <!-- Friendly Subtitle -->
+                        <p class="text-xs sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0 font-normal">
+                            Platform belajar online modern tanpa install APK atau aplikasi yang memberatkan memori. Didesain super ringan, terstruktur per bab, dan otomatis responsif di HP, tablet, maupun laptop.
                         </p>
 
                         <!-- CTA Actions -->
-                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
-                            <a href="{{ route('register') }}" wire:navigate class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm sm:text-base px-8 py-4 rounded-2xl shadow-xl shadow-indigo-200 transition transform active:scale-95">
-                                🎒 Gabung Sebagai Siswa
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-1 sm:pt-2">
+                            <a href="{{ route('register') }}" wire:navigate class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm sm:text-base px-7 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all transform active:scale-95">
+                                <span>Mulai Belajar Sekarang</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                             </a>
-                            <a href="{{ route('register') }}" wire:navigate class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm sm:text-base px-7 py-4 rounded-2xl transition">
-                                👨‍🏫 Saya Ingin Mengajar
-                            </a>
                         </div>
 
                         <!-- Micro Trust Highlights -->
-                        <div class="pt-6 border-t border-slate-100 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs font-semibold text-slate-500">
-                            <span class="flex items-center gap-1.5">
-                                <span class="text-green-500 font-bold">✓</span> Langsung Pakai Tanpa Install
-                            </span>
-                            <span class="flex items-center gap-1.5">
-                                <span class="text-green-500 font-bold">✓</span> Ringan di HP RAM Kecil
-                            </span>
-                            <span class="flex items-center gap-1.5">
-                                <span class="text-green-500 font-bold">✓</span> Masuk Kelas Pakai Kode 6 Digit
-                            </span>
+                        <div class="pt-3 sm:pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-5 text-[11px] sm:text-xs text-slate-500 font-medium">
+                            <div class="flex items-center gap-1.5 sm:gap-2">
+                                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>100% Web Tanpa Instalasi</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 sm:gap-2">
+                                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Hemat Kuota & Ringan</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 sm:gap-2">
+                                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Aman untuk Siswa & Guru</span>
+                            </div>
                         </div>
+
                     </div>
 
-                    <!-- Right Mockup Preview -->
-                    <div class="lg:col-span-5 relative">
-                        <div class="bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-3xl p-1 shadow-2xl shadow-indigo-200">
-                            <div class="bg-white rounded-[22px] p-6 space-y-4">
-                                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                                    <div class="flex items-center gap-2.5">
-                                        <div class="h-10 w-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-base">
-                                            📐
+                    <!-- Right Professional Showcase Card (Mobile-Responsive) -->
+                    <div class="lg:col-span-6 w-full">
+                        <div class="relative">
+                            
+                            <!-- Subtle Glow Layer -->
+                            <div class="absolute -inset-1.5 bg-gradient-to-tr from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl sm:rounded-[32px] blur-xl -z-10"></div>
+
+                            <!-- Main Classroom Card -->
+                            <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-xl shadow-slate-200/60 border border-slate-200/80 space-y-4 sm:space-y-5">
+                                
+                                <!-- Card Header: Classroom Info -->
+                                <div class="flex items-start justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100">
+                                    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                                        <div class="h-9 w-9 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-base sm:text-lg shadow-2xs shrink-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                            </svg>
                                         </div>
-                                        <div>
-                                            <h4 class="font-bold text-sm text-slate-900 leading-snug">Matematika Dasar X</h4>
-                                            <p class="text-xs text-slate-400">Pak Guru Budi &bull; SMA</p>
+                                        <div class="min-w-0">
+                                            <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                                <h4 class="font-bold text-sm sm:text-base text-slate-900 leading-snug truncate">Matematika Dasar X</h4>
+                                                <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                    Aktif
+                                                </span>
+                                            </div>
+                                            <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Pak Guru Budi &bull; Kelas X-A</p>
                                         </div>
                                     </div>
-                                    <span class="px-3 py-1 rounded-xl text-xs font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
-                                        MTK10A
-                                    </span>
+                                    <div class="text-right shrink-0">
+                                        <span class="text-[9px] sm:text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">Kode</span>
+                                        <span class="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[11px] sm:text-xs font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 inline-block mt-0.5">
+                                            MTK10A
+                                        </span>
+                                    </div>
                                 </div>
 
-                                <!-- Progress Card -->
-                                <div class="bg-emerald-50/70 rounded-2xl p-3.5 border border-emerald-100 space-y-1.5">
+                                <!-- Progress Overview Card -->
+                                <div class="bg-slate-50/80 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-200/70 space-y-1.5 sm:space-y-2">
                                     <div class="flex items-center justify-between text-xs">
-                                        <span class="font-bold text-emerald-950">Kemajuan Belajarmu</span>
-                                        <span class="font-extrabold text-emerald-600">75%</span>
+                                        <span class="font-bold text-slate-700">Kemajuan Pembelajaran</span>
+                                        <span class="font-bold text-indigo-600 text-[11px] sm:text-xs" id="hero-progress-text">67% Berjalan</span>
                                     </div>
-                                    <div class="w-full bg-emerald-200/60 rounded-full h-2 overflow-hidden">
-                                        <div class="bg-emerald-600 h-2 rounded-full w-3/4"></div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                        <div id="hero-progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-500" style="width: 67%"></div>
                                     </div>
-                                    <p class="text-[11px] text-emerald-700">Tinggal 1 materi lagi menuju bab berikutnya!</p>
+                                    <p class="text-[10px] sm:text-[11px] text-slate-500" id="hero-progress-hint">
+                                        Klik modul kuis ke-3 di bawah untuk simulasi langsung
+                                    </p>
                                 </div>
 
-                                <!-- Sample List -->
-                                <div class="space-y-2 text-xs">
-                                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-green-200 bg-green-50/40">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-green-600 font-bold">✓</span>
-                                            <span class="font-medium text-slate-700">1. Konsep Dasar Persamaan</span>
+                                <!-- Lessons List -->
+                                <div class="space-y-2 sm:space-y-2.5 text-xs">
+                                    <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition">
+                                        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-2">
+                                            <span class="h-5 w-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs border border-emerald-200 shrink-0">✓</span>
+                                            <span class="font-semibold text-slate-800 text-xs truncate">1. Konsep Dasar Persamaan</span>
                                         </div>
-                                        <span class="text-[10px] text-green-700 font-bold">Selesai</span>
+                                        <span class="text-[10px] sm:text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md shrink-0">Selesai</span>
                                     </div>
 
-                                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-green-200 bg-green-50/40">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-green-600 font-bold">✓</span>
-                                            <span class="font-medium text-slate-700">2. Video Contoh Soal PLSV</span>
+                                    <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition">
+                                        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-2">
+                                            <span class="h-5 w-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs border border-emerald-200 shrink-0">✓</span>
+                                            <span class="font-semibold text-slate-800 text-xs truncate">2. Video Pembahasan & Latihan</span>
                                         </div>
-                                        <span class="text-[10px] text-green-700 font-bold">Selesai</span>
+                                        <span class="text-[10px] sm:text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md shrink-0">Selesai</span>
                                     </div>
 
-                                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-purple-200 bg-purple-50/40">
-                                        <div class="flex items-center gap-2">
-                                            <span>🎯</span>
-                                            <span class="font-bold text-purple-900">3. Kuis Latihan Pemahaman</span>
+                                    <!-- Interactive Check Button -->
+                                    <button type="button"
+                                            id="hero-quiz-btn"
+                                            class="w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl border border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50/70 transition text-left cursor-pointer group">
+                                        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-2">
+                                            <span id="hero-quiz-num" class="h-5 w-5 rounded-full flex items-center justify-center font-bold text-xs bg-indigo-100 text-indigo-600 border border-indigo-200 shrink-0">3</span>
+                                            <span class="font-bold text-indigo-950 text-xs truncate">3. Kuis Evaluasi Pemahaman Bab</span>
                                         </div>
-                                        <span class="text-[10px] bg-purple-600 text-white font-bold px-2 py-0.5 rounded">Skor: 100</span>
-                                    </div>
+                                        <span id="hero-quiz-status" class="text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 rounded-lg bg-indigo-600 text-white group-hover:bg-indigo-700 transition shrink-0">
+                                            Klik Selesaikan
+                                        </span>
+                                    </button>
                                 </div>
 
-                                <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-                                    <span>📱 Nyaman di Layar HP</span>
-                                    <span class="text-indigo-600 font-bold">Demo Siap Coba ✓</span>
+                                <!-- Card Footer Quick Stats -->
+                                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-0 text-[11px] sm:text-xs text-slate-500">
+                                    <div class="flex items-center gap-1.5 font-medium">
+                                        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                                        <span>32 Siswa Aktif Terhubung</span>
+                                    </div>
+                                    <span class="font-semibold text-slate-700">Rata-rata Kuis: <strong class="text-indigo-600">88.5</strong></span>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -195,53 +221,167 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- KENAPA RUANGKELAS: HUMANIZE REASONS                          -->
+        <!-- SECTION: KOMPATIBILITAS DI SEMUA SISTEM OPERASI             -->
         <!-- ============================================================ -->
-        <section id="kenapa-kami" class="py-16 sm:py-20 bg-slate-50 border-y border-slate-100">
-            <div class="w-full px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto">
-                <div class="text-center max-w-2xl mx-auto mb-14 space-y-2">
-                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Kenapa RuangKelas?</span>
+        <section id="kompatibilitas-os" class="py-12 sm:py-20 lg:py-24 bg-slate-50/60 border-y border-slate-200/70">
+            <div class="w-full px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-8 sm:space-y-12">
+                
+                <div class="text-center max-w-2xl mx-auto space-y-2 sm:space-y-3">
                     <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
-                        Dibuat untuk Menyederhanakan Hari Belajarmu
+                        Dapat Digunakan di Semua Sistem Operasi
                     </h2>
-                    <p class="text-sm sm:text-base text-slate-600">
-                        Kami percaya belajar itu harusnya bikin mengerti, bukan bikin pusing dengan aplikasi rumit.
+                    <p class="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed font-normal">
+                        RuangKelas berbasis web teknologi mutakhir. Tak peduli jenis ponsel, tablet, atau laptop yang Anda miliki, semuanya dapat diakses langsung tanpa hambatan.
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-                    <!-- Point 1 -->
-                    <div class="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-xs space-y-3">
-                        <div class="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl font-bold">
-                            📦
+                <!-- 4 OS Cards Grid (Clean & Modern & Mobile Optimized) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    
+                    <!-- 1. Android Card -->
+                    <div class="group bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3 sm:space-y-3.5">
+                            <div class="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100/80 group-hover:scale-105 transition-transform">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5896 8.3526 13.8566 8 12 8s-3.5896.3526-5.1368.9507L4.8409 5.4477a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm sm:text-base">Android</h3>
+                                <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Smartphone & Tablet Android</p>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                                Cukup buka lewat Chrome atau Edge. Hemat kuota dan RAM, lancar di ponsel spesifikasi minimalis tanpa risiko memori penuh.
+                            </p>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">Nol Unduhan, Bebas Memori</h3>
-                        <p class="text-sm text-slate-600 leading-relaxed">
-                            HP kentang atau memori tinggal sedikit? Tenang saja, RuangKelas dibuka langsung lewat browser. Nggak makan penyimpanan sama sekali.
+                        <div class="pt-3 border-t border-slate-100 text-[11px] font-semibold text-emerald-700 flex items-center gap-1.5">
+                            <span>✓</span> Hemat RAM & Baterai
+                        </div>
+                    </div>
+
+                    <!-- 2. iOS & iPadOS Card -->
+                    <div class="group bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3 sm:space-y-3.5">
+                            <div class="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100/80 group-hover:scale-105 transition-transform">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.84c.64-.78 1.08-1.86.96-2.94-1 .04-2.15.66-2.82 1.44-.59.68-1.11 1.77-.97 2.83 1.13.09 2.19-.55 2.83-1.33z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm sm:text-base">iOS & iPadOS</h3>
+                                <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">iPhone & iPad (Semua Seri)</p>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                                Akses via Safari atau Chrome. Navigasi gestur responsif, tampilan tajam di layar Retina, serta nyaman untuk membaca materi.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 text-[11px] font-semibold text-indigo-700 flex items-center gap-1.5">
+                            <span>✓</span> Tampilan Halus & Responsif
+                        </div>
+                    </div>
+
+                    <!-- 3. Windows Card -->
+                    <div class="group bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-500/5 transition-all duration-300 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3 sm:space-y-3.5">
+                            <div class="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center border border-sky-100/80 group-hover:scale-105 transition-transform">
+                                <svg class="w-5 h-5 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm sm:text-base">Windows</h3>
+                                <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">PC Lab & Laptop Windows</p>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                                Kompatibel dengan Edge, Chrome, dan Firefox. Sangat pas bagi guru menyusun silabus dan siswa mengerjakan ujian kuis.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 text-[11px] font-semibold text-sky-700 flex items-center gap-1.5">
+                            <span>✓</span> Nyaman untuk Papan Ketik
+                        </div>
+                    </div>
+
+                    <!-- 4. macOS & ChromeOS Card -->
+                    <div class="group bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-500/5 transition-all duration-300 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3 sm:space-y-3.5">
+                            <div class="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100/80 group-hover:scale-105 transition-transform">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm sm:text-base">macOS & ChromeOS</h3>
+                                <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">MacBook & Chromebook Sekolah</p>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                                Optimal untuk Chromebook sekolah. Ringan, cepat dimuat, dan langsung berfungsi tanpa memerlukan izin administrator.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 text-[11px] font-semibold text-purple-700 flex items-center gap-1.5">
+                            <span>✓</span> Siap di Chromebook Sekolah
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- FITUR UTAMA (CLEAN & MODERN GRID)                           -->
+        <!-- ============================================================ -->
+        <section id="fitur" class="py-12 sm:py-20 lg:py-24 bg-white">
+            <div class="w-full px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-8 sm:space-y-12">
+                <div class="text-center max-w-2xl mx-auto space-y-2">
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+                        Mengapa Belajar di RuangKelas Lebih Menyenangkan?
+                    </h2>
+                    <p class="text-xs sm:text-sm md:text-base text-slate-600 font-normal">
+                        Dirancang dengan kesederhanaan untuk membantu fokus belajar dan kemudahan guru menyampaikan materi.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                    
+                    <!-- Point 1 -->
+                    <div class="group bg-white rounded-2xl p-5 sm:p-7 border border-slate-200/80 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 space-y-3 sm:space-y-4">
+                        <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100/80 group-hover:scale-105 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900">Bebas Ruang Penyimpanan</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                            Tidak memerlukan memori internal perangkat. Semua dokumen pelajaran, video penjelasan, dan tugas tersimpan rapi di cloud secara instan.
                         </p>
                     </div>
 
                     <!-- Point 2 -->
-                    <div class="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-xs space-y-3">
-                        <div class="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-bold">
-                            🗺️
+                    <div class="group bg-white rounded-2xl p-5 sm:p-7 border border-slate-200/80 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 space-y-3 sm:space-y-4">
+                        <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100/80 group-hover:scale-105 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">Alur Belajar Jelas Per Bab</h3>
-                        <p class="text-sm text-slate-600 leading-relaxed">
-                            Materi nggak berserakan. Guru menyusun langkah demi langkah dari Bab 1, video penjelasan, hingga rangkuman teks yang enak dibaca.
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900">Struktur Bab Materi Rapi</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                            Materi disusun bertingkat dari Bab pendahuluan hingga evaluasi. Siswa dapat memantau indikator persentase pemahaman secara mandiri.
                         </p>
                     </div>
 
                     <!-- Point 3 -->
-                    <div class="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-xs space-y-3">
-                        <div class="h-12 w-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl font-bold">
-                            💡
+                    <div class="group bg-white rounded-2xl p-5 sm:p-7 border border-slate-200/80 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-500/5 transition-all duration-300 space-y-3 sm:space-y-4">
+                        <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100/80 group-hover:scale-105 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">Kuis Instan dengan Pembahasan</h3>
-                        <p class="text-sm text-slate-600 leading-relaxed">
-                            Langsung tahu nilai dan jawaban yang benar tanpa menunggu besok. Kalau salah, ada pembahasannya biar langsung paham!
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900">Kuis Evaluasi Instan</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                            Pilihan ganda dengan koreksi otomatis. Hasil nilai dan pembahasan jawaban langsung muncul tepat setelah kuis disubmit oleh siswa.
                         </p>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -249,91 +389,91 @@
         <!-- ============================================================ -->
         <!-- CARA PAKAI: 3 LANGKAH MUDAH                                 -->
         <!-- ============================================================ -->
-        <section id="cara-kerja" class="py-16 sm:py-20 bg-white">
-            <div class="w-full px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto">
-                <div class="text-center max-w-2xl mx-auto mb-14 space-y-2">
-                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Cepat & Gampang</span>
+        <section id="cara-kerja" class="py-12 sm:py-20 lg:py-24 bg-slate-50/60 border-t border-slate-200/70">
+            <div class="w-full px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-8 sm:space-y-12">
+                <div class="text-center max-w-2xl mx-auto space-y-2">
                     <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
-                        Cara Mulai dalam 3 Langkah
+                        Mulai Belajar dalam 3 Langkah Mudah
                     </h2>
-                    <p class="text-sm text-slate-600">
-                        Nggak butuh panduan tebal. Ikuti tiga langkah sederhana ini:
+                    <p class="text-xs sm:text-sm md:text-base text-slate-600 font-normal">
+                        Tidak perlu petunjuk yang rumit, ikuti tiga langkah mudah berikut:
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-                    <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-3">
-                        <div class="h-10 w-10 rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center text-sm shadow-md shadow-indigo-200">
-                            1
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                    <div class="group p-5 sm:p-7 rounded-2xl bg-white border border-slate-200/80 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 space-y-3 sm:space-y-3.5">
+                        <div class="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-sm shadow-indigo-200">
+                            01
                         </div>
-                        <h3 class="font-bold text-slate-900 text-base">Buat Akun Gratis</h3>
-                        <p class="text-xs sm:text-sm text-slate-600">
-                            Daftar dalam waktu kurang dari semenit. Pilih apakah kamu Siswa yang mau belajar, atau Guru yang mau membagikan materi.
+                        <h3 class="font-bold text-slate-900 text-sm sm:text-base">Buat Akun Gratis</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                            Daftar dalam waktu kurang dari semenit. Pilih peran apakah Anda Siswa yang ingin belajar atau Guru yang ingin membuat kelas.
                         </p>
                     </div>
 
-                    <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-3">
-                        <div class="h-10 w-10 rounded-xl bg-purple-600 text-white font-black flex items-center justify-center text-sm shadow-md shadow-purple-200">
-                            2
+                    <div class="group p-5 sm:p-7 rounded-2xl bg-white border border-slate-200/80 hover:border-purple-300 hover:shadow-lg transition-all duration-300 space-y-3 sm:space-y-3.5">
+                        <div class="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-purple-600 text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-sm shadow-purple-200">
+                            02
                         </div>
-                        <h3 class="font-bold text-slate-900 text-base">Ketik Kode Kelas</h3>
-                        <p class="text-xs sm:text-sm text-slate-600">
-                            Minta 6 kode huruf dari gurumu (misalnya: <code class="font-bold text-indigo-600">MTK10A</code>), masukkan ke kotak gabung, dan kamu langsung terdaftar!
+                        <h3 class="font-bold text-slate-900 text-sm sm:text-base">Masukkan Kode Kelas</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                            Cukup masukkan 6 digit kode kelas dari guru (misalnya <code class="font-mono font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">MTK10A</code>) untuk bergabung.
                         </p>
                     </div>
 
-                    <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-3">
-                        <div class="h-10 w-10 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-sm shadow-md shadow-emerald-200">
-                            3
+                    <div class="group p-5 sm:p-7 rounded-2xl bg-white border border-slate-200/80 hover:border-emerald-300 hover:shadow-lg transition-all duration-300 space-y-3 sm:space-y-3.5">
+                        <div class="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-emerald-600 text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-sm shadow-emerald-200">
+                            03
                         </div>
-                        <h3 class="font-bold text-slate-900 text-base">Mulai Belajar & Kuis</h3>
-                        <p class="text-xs sm:text-sm text-slate-600">
-                            Buka materi, tonton video, tandai selesai setelah paham, lalu coba kuis latihan untuk membuktikan kemampuanmu!
+                        <h3 class="font-bold text-slate-900 text-sm sm:text-base">Belajar & Selesaikan Kuis</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                            Akses materi bacaan, tonton video pembelajaran, dan ukur pemahaman secara instan melalui evaluasi kuis interaktif.
                         </p>
                     </div>
                 </div>
             </div>
         </section>
 
-
         <!-- ============================================================ -->
-        <!-- FAQ / TANYA JAWAB (HUMANIZE)                                -->
+        <!-- FAQ / TANYA JAWAB (ACCORDION DINAMIS)                       -->
         <!-- ============================================================ -->
-        <section id="faq" class="py-16 sm:py-20 bg-white">
-            <div class="w-full px-4 sm:px-8 lg:px-12 max-w-4xl mx-auto space-y-10">
+        <section id="faq" class="py-12 sm:py-20 lg:py-24 bg-white border-t border-slate-200/80">
+            <div class="w-full px-4 sm:px-8 lg:px-12 max-w-4xl mx-auto space-y-6 sm:space-y-8">
                 <div class="text-center space-y-2">
-                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Tanya Jawab Santai</span>
                     <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Hal yang Sering Ditanyakan</h2>
                 </div>
 
-                <div class="space-y-3.5" x-data="{ open: null }">
-                    <div class="rounded-2xl border border-slate-200/80 p-5 bg-slate-50/60">
-                        <button @click="open = (open === 1 ? null : 1)" class="w-full text-left font-bold text-slate-900 text-sm sm:text-base flex items-center justify-between gap-4">
-                            <span>Beneran nggak perlu install aplikasi dari Play Store?</span>
-                            <span class="text-indigo-600 text-lg font-bold" x-text="open === 1 ? '−' : '+'">+</span>
+                <div class="space-y-3 sm:space-y-3.5" id="faq-accordion">
+                    <!-- Pertanyaan 1 -->
+                    <div class="faq-item rounded-2xl border border-slate-200 bg-white shadow-2xs hover:border-slate-300 transition-all">
+                        <button type="button" class="faq-toggle w-full text-left font-bold text-slate-900 text-xs sm:text-sm md:text-base p-4 sm:p-5 flex items-center justify-between gap-3 sm:gap-4 cursor-pointer focus:outline-none">
+                            <span>Apakah benar-benar bisa dibuka di semua sistem operasi tanpa aplikasi?</span>
+                            <span class="faq-icon text-indigo-600 text-lg sm:text-xl font-bold w-6 text-center shrink-0">−</span>
                         </button>
-                        <div x-show="open === 1" x-collapse class="mt-2.5 text-xs sm:text-sm text-slate-600 leading-relaxed pt-2 border-t border-slate-200/60">
-                            Iya, beneran! RuangKelas dibuat berbasis website modern. Kamu cukup buka Chrome atau Safari di HP-mu, masukkan alamat website, dan semua fitur bisa langsung dipakai tanpa download APK atau makan memori HP.
+                        <div class="faq-content text-xs sm:text-sm text-slate-600 leading-relaxed px-4 sm:px-5 pb-4 sm:pb-5 pt-1 border-t border-slate-100">
+                            Ya, 100% benar! RuangKelas dibuat berbasis Web App modern. Anda cukup membuka peramban bawaan seperti Chrome di Android, Safari di iPhone/iPad, ataupun Edge di Windows. Tidak perlu mengunduh file APK atau menginstal aplikasi tambahan.
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200/80 p-5 bg-slate-50/60">
-                        <button @click="open = (open === 2 ? null : 2)" class="w-full text-left font-bold text-slate-900 text-sm sm:text-base flex items-center justify-between gap-4">
-                            <span>Bisa dibuka di iPhone atau komputer sekolah?</span>
-                            <span class="text-indigo-600 text-lg font-bold" x-text="open === 2 ? '−' : '+'">+</span>
+                    <!-- Pertanyaan 2 -->
+                    <div class="faq-item rounded-2xl border border-slate-200 bg-white shadow-2xs hover:border-slate-300 transition-all">
+                        <button type="button" class="faq-toggle w-full text-left font-bold text-slate-900 text-xs sm:text-sm md:text-base p-4 sm:p-5 flex items-center justify-between gap-3 sm:gap-4 cursor-pointer focus:outline-none">
+                            <span>Bagaimana cara guru membagikan kelas kepada siswa?</span>
+                            <span class="faq-icon text-indigo-600 text-lg sm:text-xl font-bold w-6 text-center shrink-0">+</span>
                         </button>
-                        <div x-show="open === 2" x-collapse class="mt-2.5 text-xs sm:text-sm text-slate-600 leading-relaxed pt-2 border-t border-slate-200/60">
-                            Bisa banget. RuangKelas otomatis menyesuaikan ukuran layar dari HP Android, iPhone, iPad, laptop Windows, sampai Mac dan Chromebook.
+                        <div class="faq-content text-xs sm:text-sm text-slate-600 leading-relaxed px-4 sm:px-5 pb-4 sm:pb-5 pt-1 border-t border-slate-100 hidden">
+                            Setiap kali seorang guru membuat kelas baru, sistem secara otomatis menghasilkan kode unik 6-karakter (misal: <code>MTK10A</code>). Guru cukup menyalin dan membagikan kode tersebut ke WhatsApp kelas, lalu siswa mengetikkannya pada menu "Gabung Kelas".
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200/80 p-5 bg-slate-50/60">
-                        <button @click="open = (open === 3 ? null : 3)" class="w-full text-left font-bold text-slate-900 text-sm sm:text-base flex items-center justify-between gap-4">
-                            <span>Gimana caranya siswa ikut ke kelas saya?</span>
-                            <span class="text-indigo-600 text-lg font-bold" x-text="open === 3 ? '−' : '+'">+</span>
+                    <!-- Pertanyaan 3 -->
+                    <div class="faq-item rounded-2xl border border-slate-200 bg-white shadow-2xs hover:border-slate-300 transition-all">
+                        <button type="button" class="faq-toggle w-full text-left font-bold text-slate-900 text-xs sm:text-sm md:text-base p-4 sm:p-5 flex items-center justify-between gap-3 sm:gap-4 cursor-pointer focus:outline-none">
+                            <span>Apakah ada akun demo untuk mencoba fitur sebelum mendaftar?</span>
+                            <span class="faq-icon text-indigo-600 text-lg sm:text-xl font-bold w-6 text-center shrink-0">+</span>
                         </button>
-                        <div x-show="open === 3" x-collapse class="mt-2.5 text-xs sm:text-sm text-slate-600 leading-relaxed pt-2 border-t border-slate-200/60">
-                            Saat guru membuat kelas, sistem otomatis menghasilkan 6 huruf kode unik (misal: <code>MTK10A</code>). Guru tinggal salin kode itu dan bagikan ke grup WhatsApp siswa. Siswa tinggal masukkan kode itu di akun mereka.
+                        <div class="faq-content text-xs sm:text-sm text-slate-600 leading-relaxed px-4 sm:px-5 pb-4 sm:pb-5 pt-1 border-t border-slate-100 hidden">
+                            Tentu ada! Pada halaman Masuk (Login), kami menyediakan tombol uji coba 1-klik untuk akun Guru maupun Siswa lengkap dengan data kelas dan contoh materi.
                         </div>
                     </div>
                 </div>
@@ -341,19 +481,86 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- FOOTER                                                      -->
+        <!-- FOOTER MODERN & MINIMALIS (FULL-WIDTH & RESPONSIVE)         -->
         <!-- ============================================================ -->
-        <footer class="py-10 bg-slate-950 text-slate-400 text-xs border-t border-slate-900">
-            <div class="w-full px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <span class="font-extrabold text-white text-sm">RuangKelas</span>
-                    <span>&bull; Belajar Asik di Semua Perangkat</span>
+        <footer class="py-6 sm:py-8 bg-slate-950 text-slate-400 text-xs border-t border-slate-800">
+            <div class="w-full px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-center sm:text-left">
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 sm:gap-2">
+                    <span class="font-extrabold text-white text-xs sm:text-sm">RuangKelas</span>
+                    <span class="text-slate-600">&bull;</span>
+                    <span class="text-[11px] sm:text-xs">Belajar & Mengajar di Semua Sistem Operasi</span>
                 </div>
-                <p class="text-slate-500 text-center sm:text-right">
-                    &copy; {{ date('Y') }} RuangKelas. Dirancang ringan untuk siswa & guru Indonesia.
+                <p class="text-slate-500 text-[11px] sm:text-xs text-center sm:text-right">
+                    &copy; {{ date('Y') }} RuangKelas. Ringan, cepat, dan ramah untuk pendidikan Indonesia.
                 </p>
             </div>
         </footer>
+
+        <!-- SCRIPT INTERAKTIF (FAQ ACCORDION & HERO QUIZ) -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // 1. FAQ ACCORDION DINAMIS (BISA DIKLIK-KLIK)
+                const faqItems = document.querySelectorAll('#faq-accordion .faq-item');
+                
+                faqItems.forEach(item => {
+                    const button = item.querySelector('.faq-toggle');
+                    const content = item.querySelector('.faq-content');
+                    const icon = item.querySelector('.faq-icon');
+                    
+                    button.addEventListener('click', function () {
+                        const isCurrentlyOpen = !content.classList.contains('hidden');
+                        
+                        // Tutup semua item lain
+                        faqItems.forEach(otherItem => {
+                            const otherContent = otherItem.querySelector('.faq-content');
+                            const otherIcon = otherItem.querySelector('.faq-icon');
+                            otherContent.classList.add('hidden');
+                            otherIcon.textContent = '+';
+                        });
+                        
+                        // Toggle item yang diklik
+                        if (!isCurrentlyOpen) {
+                            content.classList.remove('hidden');
+                            icon.textContent = '−';
+                        }
+                    });
+                });
+
+                // 2. HERO CLASSROOM SHOWCASE QUIZ BUTTON
+                const quizBtn = document.getElementById('hero-quiz-btn');
+                if (quizBtn) {
+                    let completed = false;
+                    quizBtn.addEventListener('click', function () {
+                        completed = !completed;
+                        const statusText = document.getElementById('hero-quiz-status');
+                        const badgeNumber = document.getElementById('hero-quiz-num');
+                        const progressText = document.getElementById('hero-progress-text');
+                        const progressBar = document.getElementById('hero-progress-bar');
+                        const progressHint = document.getElementById('hero-progress-hint');
+
+                        if (completed) {
+                            this.className = 'w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl border transition text-left cursor-pointer group border-emerald-200 bg-emerald-50/50';
+                            statusText.textContent = 'Skor 100 ✓';
+                            statusText.className = 'text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-700';
+                            badgeNumber.textContent = '✓';
+                            badgeNumber.className = 'h-5 w-5 rounded-full flex items-center justify-center font-bold text-xs bg-emerald-100 text-emerald-600 border border-emerald-300';
+                            if (progressText) progressText.textContent = '100% Selesai 🎉';
+                            if (progressBar) progressBar.style.width = '100%';
+                            if (progressHint) progressHint.textContent = 'Semua bab modul telah berhasil diselesaikan!';
+                        } else {
+                            this.className = 'w-full flex items-center justify-between p-2.5 sm:p-3 rounded-xl border border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50/70 transition text-left cursor-pointer group';
+                            statusText.textContent = 'Klik Selesaikan';
+                            statusText.className = 'text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 rounded-lg bg-indigo-600 text-white group-hover:bg-indigo-700 transition';
+                            badgeNumber.textContent = '3';
+                            badgeNumber.className = 'h-5 w-5 rounded-full flex items-center justify-center font-bold text-xs bg-indigo-100 text-indigo-600 border border-indigo-200';
+                            if (progressText) progressText.textContent = '67% Berjalan';
+                            if (progressBar) progressBar.style.width = '67%';
+                            if (progressHint) progressHint.textContent = 'Klik modul kuis ke-3 di bawah untuk simulasi langsung';
+                        }
+                    });
+                }
+            });
+        </script>
 
     </body>
 </html>

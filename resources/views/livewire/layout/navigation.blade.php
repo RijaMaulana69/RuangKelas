@@ -18,7 +18,7 @@ new class extends Component
 
 <nav x-data="{ open: false }" class="bg-white/95 backdrop-blur-xl border-b border-slate-200/80 shadow-xs sticky top-0 z-50 transition">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full px-4 sm:px-8 lg:px-12">
         <div class="flex justify-between items-center min-h-[76px] py-2">
             <div class="flex items-center gap-8">
                 <!-- Logo Brand -->
