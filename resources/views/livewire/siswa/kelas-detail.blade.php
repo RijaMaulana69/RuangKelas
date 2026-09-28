@@ -333,8 +333,6 @@ new class extends Component {
                                                 </div>
                                                 <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
                                                     <span class="uppercase font-bold text-emerald-600">{{ $mat->tipe }}</span>
-                                                    <span>&bull;</span>
-                                                    <span>⏱️ {{ $mat->durasi_menit ?: 10 }} Menit</span>
                                                 </div>
                                             </div>
                                         </div>

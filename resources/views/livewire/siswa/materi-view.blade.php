@@ -123,8 +123,6 @@ new class extends Component {
                     <span class="font-semibold text-slate-600">{{ $material->chapter->judul }}</span>
                     <span>&bull;</span>
                     <span class="uppercase font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">{{ $material->tipe }}</span>
-                    <span>&bull;</span>
-                    <span>⏱️ Estimasi {{ $material->durasi_menit ?: 15 }} menit</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
                     {{ $material->judul }}
@@ -185,8 +183,8 @@ new class extends Component {
 
             <!-- Konten Teks Bacaan -->
             @if(!empty($material->konten))
-                <div class="prose prose-slate max-w-none text-slate-700 text-sm sm:text-base leading-relaxed space-y-4 pt-2">
-                    {!! nl2br($material->konten) !!}
+                <div class="prose prose-slate max-w-none text-slate-700 text-sm sm:text-base leading-relaxed pt-2">
+                    {!! $material->konten !!}
                 </div>
             @endif
 
