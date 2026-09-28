@@ -81,13 +81,11 @@
                              x-transition:leave-end="opacity-0 scale-95"
                              class="absolute right-0 mt-2 w-72 bg-white text-slate-800 rounded-2xl shadow-xl border border-slate-200/90 py-2 z-50 overflow-hidden"
                              style="display: none;">
-                            <div class="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
+                            <div class="px-4 py-2.5 border-b border-slate-100">
                                 <span class="font-bold text-xs text-slate-900">Notifikasi</span>
-                                <span class="text-[10px] text-slate-400">Semua terbaca</span>
                             </div>
-                            <div class="p-4 text-center text-xs text-slate-500">
-                                <span class="text-lg block mb-1">🔔</span>
-                                Tidak ada pemberitahuan baru
+                            <div class="px-4 py-6 text-center text-xs text-slate-400">
+                                Belum ada notifikasi
                             </div>
                         </div>
                     </div>
