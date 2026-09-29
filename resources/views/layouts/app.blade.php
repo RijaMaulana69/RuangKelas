@@ -16,7 +16,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased text-slate-800 bg-slate-50/70 min-h-full selection:bg-indigo-600 selection:text-white">
-        <div x-data="{ sidebarOpen: false }" class="min-h-screen bg-slate-50/70 flex flex-col">
+        <div class="min-h-screen bg-slate-50/70 flex flex-col">
 
             <!-- ============================================================ -->
             <!-- 1. TOP HEADER APP BAR (BERSIH, PROFESIONAL, ELEGAN)          -->
@@ -25,14 +25,6 @@
                 
                 <!-- Sisi Kiri: Hamburger + Brand Logo + Judul Halaman -->
                 <div class="flex items-center gap-3 sm:gap-4 min-w-0">
-                    <!-- Hamburger Button (Mobile / Tablet < lg) -->
-                    <button @click="sidebarOpen = true" 
-                            class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none transition shrink-0"
-                            title="Buka Navigasi Sidebar">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
 
                     <!-- Brand Logo RuangKelas (Sinkron Landing Page) -->
                     <a href="{{ route('dashboard') }}" wire:navigate class="inline-flex items-center gap-2 sm:gap-2.5 group shrink-0">

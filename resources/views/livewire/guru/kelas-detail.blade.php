@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use App\Models\Kelas;
 use App\Models\Chapter;
@@ -573,108 +573,124 @@ new class extends Component {
     }
 }; ?>
 
-<div class="py-6 sm:py-8 space-y-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="space-y-6 pb-20 md:pb-8">
+    <div class="max-w-7xl mx-auto space-y-6">
         
-        <!-- Breadcrumb Navigasi Ramah Guru -->
-        <div class="flex items-center justify-between gap-4">
-            <nav class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                <a href="{{ route('guru.kelas.index') }}" wire:navigate class="inline-flex items-center gap-1.5 hover:text-indigo-600 transition font-bold">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <!-- Breadcrumb Navigasi Modern -->
+        <div class="flex items-center">
+            <nav class="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200/90 shadow-2xs text-xs sm:text-sm">
+                <a href="{{ route('guru.kelas.index') }}" wire:navigate class="inline-flex items-center gap-1.5 text-slate-500 hover:text-indigo-600 font-semibold transition group">
+                    <svg class="h-4 w-4 text-slate-400 group-hover:text-indigo-600 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                     </svg>
-                    <span>Kelola Kelas</span>
+                    <span>Daftar Kelas</span>
                 </a>
-                <span class="text-slate-300">/</span>
-                <span class="text-slate-800 font-bold truncate max-w-xs sm:max-w-md">{{ $kelas->nama }}</span>
+                <svg class="h-3.5 w-3.5 text-slate-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+                <span class="font-bold text-slate-900 truncate max-w-xs sm:max-w-md">
+                    {{ $kelas->nama }}
+                </span>
             </nav>
-
-            <span class="text-xs text-slate-400 hidden sm:inline">ID Kelas: #{{ $kelas->id }}</span>
         </div>
 
         <!-- Flash Alert Notifikasi -->
         @if (session('success'))
-            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between text-xs sm:text-sm shadow-xs transition">
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
+                 x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between text-xs sm:text-sm shadow-xs">
                 <div class="flex items-center gap-2 font-bold">
-                    <span class="text-emerald-600 text-base">✓</span>
+                    <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                     <span>{{ session('success') }}</span>
                 </div>
-                <button @click="show = false" class="text-emerald-600 hover:text-emerald-800 text-lg cursor-pointer">&times;</button>
+                <button @click="show = false" class="text-emerald-600 hover:text-emerald-800 p-1 rounded-lg cursor-pointer shrink-0">&times;</button>
             </div>
         @endif
 
-        <!-- Banner Ringkasan Kelas: Bersih, Rapi & Elegan -->
-        <!-- Banner Kelas -->
-        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-xs">
-            <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-                <div class="space-y-1.5 min-w-0">
-                    <div class="flex flex-wrap items-center gap-1.5">
-                        <span class="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600">{{ $kelas->jenjang }} · {{ $kelas->mapel }}</span>
-                        <span class="px-2 py-0.5 rounded-lg text-[11px] font-bold {{ $kelas->aktif ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700' }}">{{ $kelas->aktif ? 'Aktif' : 'Nonaktif' }}</span>
-                    </div>
-                    <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{{ $kelas->nama }}</h1>
+        <!-- Banner Info Kelas -->
+        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-xs space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1 min-w-0">
+                    <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">{{ $kelas->nama }}</h1>
                     @if($kelas->deskripsi)
-                        <p class="text-xs text-slate-500 leading-relaxed max-w-lg">{{ $kelas->deskripsi }}</p>
+                        <p class="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-2xl">{{ $kelas->deskripsi }}</p>
                     @endif
                 </div>
 
-                <div class="flex items-center gap-2 shrink-0">
-                    <div x-data="{ copied: false }" class="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                <!-- Box Kode Kelas -->
+                <div class="shrink-0">
+                    <div x-data="{ copied: false }" class="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block leading-none">Kode Kelas</span>
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block leading-none">Kode Kelas</span>
                             <span class="text-sm font-mono font-black text-indigo-600 tracking-wider select-all">{{ $kelas->kode_kelas }}</span>
                         </div>
                         <button @click="navigator.clipboard.writeText('{{ $kelas->kode_kelas }}'); copied = true; setTimeout(() => copied = false, 2000)"
-                                class="p-1.5 text-slate-400 hover:text-indigo-600 rounded-lg transition cursor-pointer" title="Salin">
-                            <span x-show="!copied" class="text-sm">📋</span>
-                            <span x-show="copied" class="text-[10px] text-emerald-600 font-bold" style="display: none;">✓</span>
+                                class="p-1.5 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-white transition cursor-pointer" title="Salin Kode Kelas">
+                            <svg x-show="!copied" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <svg x-show="copied" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="display:none;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                         </button>
                     </div>
-                    <button wire:click="openCreateChapter" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-sm transition active:scale-95 cursor-pointer">
-                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                        Bab Baru
-                    </button>
                 </div>
             </div>
 
-            <!-- Stats Inline -->
-            <div class="flex flex-wrap items-center gap-4 pt-4 mt-4 border-t border-slate-100 text-xs">
-                <div class="flex items-center gap-1.5 text-slate-600">
-                    <span class="font-black text-sm text-slate-800">{{ $siswaList->count() }}</span>
-                    <span>siswa</span>
+            <!-- Stats Ringkas -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-4 border-t border-slate-100">
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50/80 border border-slate-100">
+                    <div class="h-9 w-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm shrink-0">👥</div>
+                    <div>
+                        <p class="text-base font-black text-slate-800 leading-tight">{{ $siswaList->count() }}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Siswa</p>
+                    </div>
                 </div>
-                <span class="text-slate-300">·</span>
-                <div class="flex items-center gap-1.5 text-slate-600">
-                    <span class="font-black text-sm text-slate-800">{{ $kelas->chapters->count() }}</span>
-                    <span>bab</span>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50/80 border border-slate-100">
+                    <div class="h-9 w-9 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm shrink-0">📚</div>
+                    <div>
+                        <p class="text-base font-black text-slate-800 leading-tight">{{ $kelas->chapters->count() }}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Bab Materi</p>
+                    </div>
                 </div>
-                <span class="text-slate-300">·</span>
-                <div class="flex items-center gap-1.5 text-slate-600">
-                    <span class="font-black text-sm text-slate-800">{{ $allAssignments->count() }}</span>
-                    <span>tugas</span>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50/80 border border-slate-100">
+                    <div class="h-9 w-9 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-sm shrink-0">📝</div>
+                    <div>
+                        <p class="text-base font-black text-slate-800 leading-tight">{{ $allAssignments->count() }}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Tugas</p>
+                    </div>
                 </div>
-                <span class="text-slate-300">·</span>
-                <div class="flex items-center gap-1.5 text-slate-600">
-                    <span class="font-black text-sm text-slate-800">{{ $allQuizzes->count() }}</span>
-                    <span>kuis</span>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50/80 border border-slate-100">
+                    <div class="h-9 w-9 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm shrink-0">🎯</div>
+                    <div>
+                        <p class="text-base font-black text-slate-800 leading-tight">{{ $allQuizzes->count() }}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Kuis</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tab Navigasi -->
-        <div class="flex items-center gap-1 text-xs sm:text-sm font-bold">
-            <button wire:click="$set('activeTab', 'kurikulum')"
-                    class="px-4 py-2 rounded-xl transition cursor-pointer {{ $activeTab === 'kurikulum' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-white/60' }}">
-                Kurikulum
-            </button>
-            <button wire:click="$set('activeTab', 'siswa')"
-                    class="px-4 py-2 rounded-xl transition cursor-pointer {{ $activeTab === 'siswa' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-white/60' }}">
-                Siswa
-                <span class="ml-1 px-1.5 py-0.5 rounded-md text-[10px] {{ $activeTab === 'siswa' ? 'bg-slate-100 text-slate-700' : 'bg-slate-200/70 text-slate-500' }}">{{ $siswaList->count() }}</span>
-            </button>
-            <button wire:click="$set('activeTab', 'nilai')"
-                    class="px-4 py-2 rounded-xl transition cursor-pointer {{ $activeTab === 'nilai' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-white/60' }}">
-                Nilai
+        <!-- Tab Navigasi & Tombol Tambah Bab di Pojok Kanan -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 bg-slate-200/70 p-1.5 rounded-2xl w-full sm:w-auto max-w-md">
+                <button wire:click="$set('activeTab', 'kurikulum')"
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer {{ $activeTab === 'kurikulum' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    <span>Kurikulum</span>
+                </button>
+                <button wire:click="$set('activeTab', 'siswa')"
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer {{ $activeTab === 'siswa' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <span>Siswa</span>
+                    <span class="px-1.5 py-0.5 rounded-md text-[10px] {{ $activeTab === 'siswa' ? 'bg-indigo-100 text-indigo-700 font-bold' : 'bg-slate-300/60 text-slate-600' }}">{{ $siswaList->count() }}</span>
+                </button>
+                <button wire:click="$set('activeTab', 'nilai')"
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer {{ $activeTab === 'nilai' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                    <span>Nilai</span>
+                </button>
+            </div>
+
+            <!-- Tombol Tambah Bab di Pojok Kanan -->
+            <button wire:click="openCreateChapter" class="inline-flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm shadow-xs transition active:scale-95 cursor-pointer shrink-0">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                <span>Tambah Bab</span>
             </button>
         </div>
 
@@ -682,144 +698,221 @@ new class extends Component {
         <!-- TAB 1: KURIKULUM & MATERI (BAB, MATERI PDF/LINK, TUGAS, KUIS) -->
         <!-- ============================================================ -->
         @if ($activeTab === 'kurikulum')
-            <div class="space-y-4">
+            <div class="space-y-6">
                 @forelse ($kelas->chapters as $index => $chapter)
-                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden group/bab">
-                        <!-- Header Bab -->
-                        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-3">
+                    <div x-data="{ open: true }" class="bg-white rounded-2xl border-2 border-slate-200/90 shadow-xs overflow-hidden transition-all">
+                        <!-- Header Bab (Clickable to collapse) -->
+                        <div class="px-5 py-4 flex items-center justify-between gap-3 cursor-pointer select-none bg-white hover:bg-slate-50/70 transition" @click="open = !open">
                             <div class="min-w-0">
-                                <h3 class="font-bold text-sm sm:text-base text-slate-900 truncate">{{ $chapter->judul }}</h3>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Bab {{ $index + 1 }}</span>
+                                    <span class="text-slate-300">&bull;</span>
+                                    <span class="text-xs text-slate-500 font-medium">
+                                        {{ $chapter->materials->count() }} Materi &bull; {{ $chapter->assignments->count() }} Tugas &bull; {{ $chapter->quizzes->count() }} Kuis
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-sm sm:text-base text-slate-900 truncate mt-0.5">{{ $chapter->judul }}</h3>
                                 @if ($chapter->deskripsi)
-                                    <p class="text-[11px] text-slate-500 mt-0.5 truncate">{{ $chapter->deskripsi }}</p>
+                                    <p class="text-xs text-slate-500 mt-0.5 line-clamp-1">{{ $chapter->deskripsi }}</p>
                                 @endif
                             </div>
-                            <div class="flex items-center gap-1 shrink-0 opacity-0 group-hover/bab:opacity-100 transition">
-                                <button wire:click="openCreateMaterial({{ $chapter->id }})" class="px-2 py-1 rounded-lg text-[11px] font-bold text-slate-500 hover:text-indigo-700 hover:bg-indigo-50 transition cursor-pointer">+ Materi</button>
-                                <button wire:click="openCreateAssignment({{ $chapter->id }})" class="px-2 py-1 rounded-lg text-[11px] font-bold text-slate-500 hover:text-amber-700 hover:bg-amber-50 transition cursor-pointer">+ Tugas</button>
-                                <button wire:click="openCreateQuiz({{ $chapter->id }})" class="px-2 py-1 rounded-lg text-[11px] font-bold text-slate-500 hover:text-purple-700 hover:bg-purple-50 transition cursor-pointer">+ Kuis</button>
-                                <div class="w-px h-4 bg-slate-200 mx-0.5"></div>
-                                <button wire:click="openEditChapter({{ $chapter->id }})" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg transition cursor-pointer" title="Edit Bab">
-                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+
+                            <!-- Aksi Bab di Sisi Kanan: Edit Bab, Hapus Bab & Panah Dropdown -->
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button @click.stop wire:click="openEditChapter({{ $chapter->id }})" 
+                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition cursor-pointer" 
+                                        title="Edit Bab">
+                                    <svg class="h-3.5 w-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                    <span>Edit</span>
                                 </button>
-                                <button wire:click="hapusChapter({{ $chapter->id }})" wire:confirm="Yakin hapus bab ini beserta isinya?" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition cursor-pointer" title="Hapus Bab">
-                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+
+                                <button @click.stop wire:click="hapusChapter({{ $chapter->id }})" wire:confirm="Yakin hapus bab ini beserta isinya?" 
+                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition cursor-pointer" 
+                                        title="Hapus Bab">
+                                    <svg class="h-3.5 w-3.5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    <span>Hapus</span>
                                 </button>
+
+                                <div class="p-1 rounded-lg text-slate-400 group-hover:text-slate-600">
+                                    <svg class="h-4 w-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Isi Konten Bab -->
-                        <div class="p-4 sm:p-5 space-y-3">
+                        <!-- Konten Bab (Collapsible) dengan Latar Kontras agar Tidak Menyatu -->
+                        <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="border-t-2 border-slate-100 bg-slate-50/70 p-4 sm:p-5 space-y-3">
                             
-                            <!-- 1. List Materi Pembelajaran -->
-                            <!-- 1. List Materi -->
-                            @if ($chapter->materials->count() > 0)
-                                <div class="space-y-1">
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">Materi</span>
-                                    @foreach ($chapter->materials as $mat)
-                                        <div class="flex items-center justify-between gap-3 py-2 px-3 rounded-xl hover:bg-slate-50 transition group">
-                                            <div class="flex items-center gap-2.5 min-w-0">
-                                                <span class="text-base shrink-0">@if($mat->tipe === 'pdf')📕@elseif($mat->tipe === 'video')🎥@elseif($mat->tipe === 'link')🔗@else📄@endif</span>
-                                                <div class="min-w-0">
-                                                    <button wire:click="openEditMaterial({{ $mat->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-indigo-600 transition text-left cursor-pointer truncate block" title="Klik untuk edit materi">
-                                                        {{ $mat->judul }}
-                                                    </button>
-                                                    <span class="text-[10px] uppercase font-bold text-slate-400">{{ $mat->tipe }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition">
-                                                <button wire:click="openEditMaterial({{ $mat->id }})" class="p-1 text-slate-400 hover:text-slate-700 rounded transition cursor-pointer" title="Edit">✏️</button>
-                                                <button wire:click="hapusMaterial({{ $mat->id }})" wire:confirm="Hapus materi ini?" class="p-1 text-slate-400 hover:text-red-600 rounded transition cursor-pointer" title="Hapus">🗑️</button>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                            <!-- Header Isi Bab: Ringkasan Item & Tombol Aksi Tambah di Sebelah Kanan -->
+                            <div class="flex items-center justify-between gap-3 pb-2.5 border-b border-slate-200/80">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">Isi Pembelajaran</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-slate-600 border border-slate-200">
+                                        {{ $chapter->materials->count() + $chapter->assignments->count() + $chapter->quizzes->count() }} Item
+                                    </span>
                                 </div>
-                            @endif
 
-                            <!-- 2. List Tugas -->
-                            @if ($chapter->assignments->count() > 0)
-                                <div class="space-y-1 pt-2">
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-700 block mb-1">Tugas</span>
-                                    @foreach ($chapter->assignments as $asg)
-                                        @php
-                                            $subCount = $asg->submissions->count();
-                                            $gradedCount = $asg->submissions->where('status', 'graded')->count();
-                                            $ungradedCount = $subCount - $gradedCount;
-                                        @endphp
-                                        <div class="flex items-center justify-between gap-3 py-2.5 px-3 rounded-xl hover:bg-amber-50/60 transition group border border-transparent hover:border-amber-200/60">
-                                            <div class="flex items-center gap-2.5 min-w-0">
-                                                <span class="text-base shrink-0">📝</span>
-                                                <div class="min-w-0">
-                                                    <button wire:click="openGrading({{ $asg->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-amber-700 transition text-left cursor-pointer truncate block" title="Klik untuk periksa pengumpulan & beri nilai">
-                                                        {{ $asg->judul }}
-                                                    </button>
-                                                    <div class="flex flex-wrap items-center gap-2 text-[10px] text-slate-500 mt-0.5">
-                                                        <span class="font-bold {{ $ungradedCount > 0 ? 'text-amber-800' : 'text-slate-500' }}">{{ $subCount }} dikumpulkan</span>
-                                                        @if($asg->deadline)
-                                                            <span>&bull;</span>
-                                                            <span class="{{ $asg->isLewatDeadline() ? 'text-rose-600 font-bold' : '' }}">{{ $asg->deadline->translatedFormat('d M H:i') }}</span>
-                                                        @endif
-                                                        @if($ungradedCount > 0)
-                                                            <span class="px-1.5 py-0.5 rounded-md bg-amber-200 text-amber-950 font-bold text-[10px]">{{ $ungradedCount }} perlu dinilai</span>
-                                                        @elseif($subCount > 0)
-                                                            <span class="text-emerald-600 font-bold">✓</span>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center gap-1 shrink-0">
-                                                <button wire:click="openGrading({{ $asg->id }})" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 transition cursor-pointer">Nilai</button>
-                                                <button wire:click="openEditAssignment({{ $asg->id }})" class="p-1 text-slate-400 hover:text-slate-700 rounded transition cursor-pointer opacity-0 group-hover:opacity-100" title="Edit">✏️</button>
-                                                <button wire:click="hapusAssignment({{ $asg->id }})" wire:confirm="Hapus tugas ini?" class="p-1 text-slate-400 hover:text-rose-600 rounded transition cursor-pointer opacity-0 group-hover:opacity-100" title="Hapus">🗑️</button>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
+                                <!-- Tombol Aksi Tambah di Kanan: Sederhana & Bersih -->
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <button wire:click="openCreateMaterial({{ $chapter->id }})" 
+                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-indigo-700 bg-white hover:bg-indigo-50 border border-indigo-200 shadow-2xs transition active:scale-95 cursor-pointer">
+                                        <svg class="h-3.5 w-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                        <span>Materi</span>
+                                    </button>
 
-                            <!-- 3. List Kuis -->
-                            @if ($chapter->quizzes->count() > 0)
-                                <div class="space-y-1 pt-2">
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-purple-700 block mb-1">Kuis</span>
-                                    @foreach ($chapter->quizzes as $quiz)
-                                        <div class="flex items-center justify-between gap-3 py-2.5 px-3 rounded-xl hover:bg-purple-50/60 transition group border border-transparent hover:border-purple-200/60">
-                                            <div class="flex items-center gap-2.5 min-w-0">
-                                                <span class="text-base shrink-0">🎯</span>
-                                                <div class="min-w-0">
-                                                    <button wire:click="openQuestions({{ $quiz->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-purple-700 transition text-left cursor-pointer truncate block" title="Kelola soal & lihat hasil">
-                                                        {{ $quiz->judul }}
-                                                    </button>
-                                                    <div class="flex flex-wrap items-center gap-2 text-[10px] text-slate-500 mt-0.5">
-                                                        <span class="font-bold text-purple-700">{{ $quiz->questions->count() }} soal</span>
-                                                        <span>&bull;</span>
-                                                        <span>⏱️ {{ $quiz->durasi_menit }} mnt</span>
-                                                        <span>&bull;</span>
-                                                        <span>KKM {{ $quiz->kkm }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center gap-1 shrink-0">
-                                                <button wire:click="openQuestions({{ $quiz->id }})" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-purple-700 bg-purple-100 hover:bg-purple-200 transition cursor-pointer">Soal</button>
-                                                <button wire:click="openEditQuiz({{ $quiz->id }})" class="p-1 text-slate-400 hover:text-slate-700 rounded transition cursor-pointer opacity-0 group-hover:opacity-100" title="Edit">✏️</button>
-                                                <button wire:click="hapusQuiz({{ $quiz->id }})" wire:confirm="Hapus kuis ini?" class="p-1 text-slate-400 hover:text-rose-600 rounded transition cursor-pointer opacity-0 group-hover:opacity-100" title="Hapus">🗑️</button>
+                                    <button wire:click="openCreateAssignment({{ $chapter->id }})" 
+                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-amber-800 bg-white hover:bg-amber-50 border border-amber-200 shadow-2xs transition active:scale-95 cursor-pointer">
+                                        <svg class="h-3.5 w-3.5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                        <span>Tugas</span>
+                                    </button>
+
+                                    <button wire:click="openCreateQuiz({{ $chapter->id }})" 
+                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-purple-800 bg-white hover:bg-purple-50 border border-purple-200 shadow-2xs transition active:scale-95 cursor-pointer">
+                                        <svg class="h-3.5 w-3.5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                        <span>Kuis</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Daftar Konten Pembelajaran Bab (Materi, Tugas, Kuis) -->
+                            <div class="space-y-2">
+                                <!-- 1. List Materi Pembelajaran -->
+                                @foreach ($chapter->materials as $mat)
+                                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white border border-slate-200/90 hover:border-indigo-300 shadow-2xs transition">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0
+                                                @if($mat->tipe === 'pdf') bg-rose-50 text-rose-700 border border-rose-200
+                                                @elseif($mat->tipe === 'video') bg-red-50 text-red-700 border border-red-200
+                                                @elseif($mat->tipe === 'link') bg-blue-50 text-blue-700 border border-blue-200
+                                                @else bg-indigo-50 text-indigo-700 border border-indigo-200
+                                                @endif">
+                                                Materi &bull; {{ $mat->tipe }}
+                                            </span>
+                                            <div class="min-w-0">
+                                                <button wire:click="openEditMaterial({{ $mat->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-indigo-600 transition text-left cursor-pointer truncate block" title="Klik untuk edit materi">
+                                                    {{ $mat->judul }}
+                                                </button>
+                                                @if($mat->durasi_menit)
+                                                    <span class="text-[11px] text-slate-400 font-medium">⏱️ {{ $mat->durasi_menit }} mnt</span>
+                                                @endif
                                             </div>
                                         </div>
-                                    @endforeach
-                                </div>
-                            @endif
+                                        <!-- Aksi CRUD Sebelah Kanan & Jelas (Bukan Abu-Abu) -->
+                                        <div class="flex items-center gap-1.5 shrink-0">
+                                            <button wire:click="openEditMaterial({{ $mat->id }})" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition cursor-pointer" title="Edit Materi">
+                                                <svg class="h-3.5 w-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                                <span>Edit</span>
+                                            </button>
+                                            <button wire:click="hapusMaterial({{ $mat->id }})" wire:confirm="Hapus materi ini?" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition cursor-pointer" title="Hapus Materi">
+                                                <svg class="h-3.5 w-3.5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                <span>Hapus</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                                <!-- 2. List Tugas -->
+                                @foreach ($chapter->assignments as $asg)
+                                    @php
+                                         $subCount = $asg->submissions->count();
+                                        $gradedCount = $asg->submissions->where('status', 'graded')->count();
+                                        $ungradedCount = $subCount - $gradedCount;
+                                    @endphp
+                                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white border border-slate-200/90 hover:border-amber-300 shadow-2xs transition">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0 bg-amber-50 text-amber-800 border border-amber-200">
+                                                Tugas
+                                            </span>
+                                            <div class="min-w-0">
+                                                <button wire:click="openGrading({{ $asg->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-amber-700 transition text-left cursor-pointer truncate block" title="Periksa tugas siswa">
+                                                    {{ $asg->judul }}
+                                                </button>
+                                                <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 mt-0.5">
+                                                    <span class="font-bold {{ $ungradedCount > 0 ? 'text-amber-800' : 'text-slate-600' }}">{{ $subCount }} dikumpulkan</span>
+                                                    @if($asg->deadline)
+                                                        <span>&bull;</span>
+                                                        <span class="{{ $asg->isLewatDeadline() ? 'text-rose-600 font-bold' : '' }}">Tenggat: {{ $asg->deadline->translatedFormat('d M H:i') }}</span>
+                                                    @endif
+                                                    @if($ungradedCount > 0)
+                                                        <span class="px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold text-[10px]">{{ $ungradedCount }} perlu dinilai</span>
+                                                    @elseif($subCount > 0)
+                                                        <span class="text-emerald-600 font-bold text-[10px]">✓ Dinilai</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Aksi CRUD Sebelah Kanan & Jelas (Bukan Abu-Abu) -->
+                                        <div class="flex items-center gap-1.5 shrink-0">
+                                            <button wire:click="openGrading({{ $asg->id }})" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-amber-800 bg-amber-100 hover:bg-amber-200 border border-amber-300 transition cursor-pointer" title="Periksa & Beri Nilai">
+                                                <svg class="h-3.5 w-3.5 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <span>Nilai</span>
+                                            </button>
+                                            <button wire:click="openEditAssignment({{ $asg->id }})" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition cursor-pointer" title="Edit Tugas">
+                                                <svg class="h-3.5 w-3.5 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                                <span>Edit</span>
+                                            </button>
+                                            <button wire:click="hapusAssignment({{ $asg->id }})" wire:confirm="Hapus tugas ini?" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition cursor-pointer" title="Hapus Tugas">
+                                                <svg class="h-3.5 w-3.5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                <span>Hapus</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                                <!-- 3. List Kuis -->
+                                @foreach ($chapter->quizzes as $quiz)
+                                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white border border-slate-200/90 hover:border-purple-300 shadow-2xs transition">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0 bg-purple-50 text-purple-800 border border-purple-200">
+                                                Kuis
+                                            </span>
+                                            <div class="min-w-0">
+                                                <button wire:click="openQuestions({{ $quiz->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-purple-700 transition text-left cursor-pointer truncate block" title="Kelola butir soal">
+                                                    {{ $quiz->judul }}
+                                                </button>
+                                                <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 mt-0.5">
+                                                    <span class="font-bold text-purple-700">{{ $quiz->questions->count() }} Soal</span>
+                                                    <span>&bull;</span>
+                                                    <span>⏱️ {{ $quiz->durasi_menit }} mnt</span>
+                                                    <span>&bull;</span>
+                                                    <span>KKM: <b class="text-slate-700">{{ $quiz->kkm }}</b></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Aksi CRUD Sebelah Kanan & Jelas (Bukan Abu-Abu) -->
+                                        <div class="flex items-center gap-1.5 shrink-0">
+                                            <button wire:click="openQuestions({{ $quiz->id }})" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-purple-800 bg-purple-100 hover:bg-purple-200 border border-purple-300 transition cursor-pointer" title="Kelola Butir Soal">
+                                                <svg class="h-3.5 w-3.5 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <span>Soal</span>
+                                            </button>
+                                            <button wire:click="openEditQuiz({{ $quiz->id }})" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-purple-800 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition cursor-pointer" title="Edit Kuis">
+                                                <svg class="h-3.5 w-3.5 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                                <span>Edit</span>
+                                            </button>
+                                            <button wire:click="hapusQuiz({{ $quiz->id }})" wire:confirm="Hapus kuis ini?" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition cursor-pointer" title="Hapus Kuis">
+                                                <svg class="h-3.5 w-3.5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                <span>Hapus</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
 
                             @if ($chapter->materials->count() === 0 && $chapter->assignments->count() === 0 && $chapter->quizzes->count() === 0)
-                                <div class="p-6 rounded-2xl bg-slate-50 text-center text-xs text-slate-400">
-                                    Bab ini masih kosong. Klik tombol di kanan atas bab untuk menambahkan materi (PDF/link), Tugas, atau kuis.
+                                <div class="py-6 rounded-xl bg-white text-center space-y-1.5 border border-dashed border-slate-300">
+                                    <p class="text-xs text-slate-600 font-bold">Belum ada konten pembelajaran di bab ini</p>
+                                    <p class="text-[11px] text-slate-400">Klik tombol <b>+ Materi</b>, <b>+ Tugas</b>, atau <b>+ Kuis</b> di atas untuk mulai menambahkan.</p>
                                 </div>
                             @endif
                         </div>
                     </div>
                 @empty
-                    <div class="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3">
-                        <span class="text-4xl block">📚</span>
+                    <div class="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3 shadow-sm">
+                        <div class="h-16 w-16 mx-auto rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center border border-indigo-100">
+                            <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        </div>
                         <h3 class="font-bold text-slate-800 text-base">Belum Ada Bab</h3>
-                        <p class="text-xs text-slate-400 max-w-sm mx-auto">Mulai susun kurikulum kelas Anda dengan menambahkan Bab pertama.</p>
-                        <button wire:click="openCreateChapter" class="mt-2 inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-xs transition">
+                        <p class="text-xs text-slate-400 max-w-sm mx-auto">Mulai susun kurikulum kelas dengan menambahkan Bab pertama.</p>
+                        <button wire:click="openCreateChapter" class="mt-2 inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-xs transition cursor-pointer">
                             + Tambah Bab Pertama
                         </button>
                     </div>
