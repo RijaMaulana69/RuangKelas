@@ -40,7 +40,7 @@ new class extends Component {
             $progress->status_selesai = !$progress->status_selesai;
             $progress->selesai_at = $progress->status_selesai ? now() : null;
             $progress->save();
-            $this->isSelesai = $progress->status_selesai;
+            $this->isSelesai = (bool) $progress->status_selesai;
         } else {
             Progress::create([
                 'user_id' => $userId,
@@ -52,19 +52,15 @@ new class extends Component {
         }
 
         if ($this->isSelesai) {
-            session()->flash('success', 'Hebat! Kamu telah menyelesaikan materi ini 🎉');
+            session()->flash('success', 'Materi berhasil ditandai sudah dipelajari.');
+        } else {
+            session()->flash('success', 'Status materi diperbarui menjadi belum selesai.');
         }
     }
 
     public function with(): array
     {
         $material = Material::with(['chapter.kelas', 'chapter.materials'])->findOrFail($this->materialId);
-
-        // Ambil materi selanjutnya dalam chapter yang sama jika ada
-        $nextMaterial = Material::where('chapter_id', $material->chapter_id)
-            ->where('urutan', '>', $material->urutan)
-            ->orderBy('urutan')
-            ->first();
 
         // Parse embed URL YouTube jika tipe video
         $embedUrl = null;
@@ -79,159 +75,171 @@ new class extends Component {
 
         return [
             'material' => $material,
-            'nextMaterial' => $nextMaterial,
             'embedUrl' => $embedUrl,
         ];
     }
 }; ?>
 
-<div class="py-6 sm:py-8 pb-28 md:pb-12">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="py-5 sm:py-6 pb-20 md:pb-8">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 space-y-4">
         <!-- Flash Alert -->
         @if (session('success'))
-            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between text-xs sm:text-sm shadow-sm transition">
-                <div class="flex items-center gap-2 font-semibold">
-                    <span class="text-emerald-600 font-bold text-base">✓</span>
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between text-xs sm:text-sm shadow-2xs transition">
+                <div class="flex items-center gap-2 font-medium">
+                    <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
                     <span>{{ session('success') }}</span>
                 </div>
-                <button @click="show = false" class="text-emerald-600 hover:text-emerald-800 text-lg">&times;</button>
+                <button @click="show = false" class="text-emerald-600 hover:text-emerald-800 text-base leading-none">&times;</button>
             </div>
         @endif
 
-        <!-- Navigasi Breadcrumb Atas -->
-        <div class="flex flex-wrap items-center justify-between gap-3">
-            <a href="{{ route('siswa.kelas.show', $material->chapter->class_id) }}" wire:navigate class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-emerald-600 transition bg-white px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs">
-                &larr; Silabus: {{ $material->chapter->kelas->nama }}
+        <!-- Navigasi & Status Dinamis -->
+        <div class="flex items-center justify-between">
+            <a href="{{ route('siswa.kelas.show', $material->chapter->class_id) }}" wire:navigate 
+               class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+                <span>Kembali</span>
             </a>
 
-            @if($isSelesai)
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs">
-                    ✓ Sudah Dipelajari
-                </span>
-            @else
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
-                    Sedang Dipelajari
-                </span>
-            @endif
+            <!-- Badge Status Minimalis Dinamis -->
+            <button wire:click="toggleSelesai" wire:loading.attr="disabled" type="button" 
+                    title="{{ $isSelesai ? 'Klik untuk tandai belum selesai' : 'Klik untuk tandai sudah dipelajari' }}"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition transform active:scale-95 cursor-pointer {{ $isSelesai ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200' }}">
+                <span class="h-1.5 w-1.5 rounded-full {{ $isSelesai ? 'bg-emerald-500' : 'bg-slate-400' }}"></span>
+                <span>{{ $isSelesai ? 'Sudah Dipelajari' : 'Belum Dipelajari' }}</span>
+            </button>
         </div>
 
         <!-- Card Materi Pembelajaran -->
-        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-sm space-y-6">
+        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs space-y-4">
             <!-- Header Judul -->
-            <div class="border-b border-slate-100 pb-5">
-                <div class="flex flex-wrap items-center gap-2 text-xs text-slate-400 mb-2">
-                    <span class="font-semibold text-slate-600">{{ $material->chapter->judul }}</span>
+            <div class="border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2 text-xs text-slate-400 mb-1 font-medium">
+                    <span>{{ $material->chapter->judul }}</span>
                     <span>&bull;</span>
-                    <span class="uppercase font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">{{ $material->tipe }}</span>
+                    <span class="uppercase font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded text-[10px]">{{ $material->tipe }}</span>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                <h1 class="text-lg sm:text-xl font-bold text-slate-800 tracking-tight leading-snug">
                     {{ $material->judul }}
                 </h1>
             </div>
 
             <!-- Tampilan Video YouTube Responsif -->
             @if($material->tipe === 'video' && $embedUrl)
-                <div class="rounded-2xl overflow-hidden aspect-video bg-black shadow-xl ring-1 ring-slate-900/10">
+                <div class="rounded-xl overflow-hidden aspect-video bg-black shadow-2xs border border-slate-200">
                     <iframe src="{{ $embedUrl }}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             @endif
 
-            <!-- Tampilan Dokumen PDF Interaktif -->
+            <!-- Tampilan Dokumen PDF Ringkas -->
             @if($material->tipe === 'pdf')
-                <div class="space-y-4">
-                    <div class="p-5 sm:p-6 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xl">📄</span>
-                                <h4 class="font-bold text-amber-950 text-sm">Dokumen Modul / E-Book PDF</h4>
-                            </div>
-                            <p class="text-xs text-amber-800">Pelajari materi langsung di bawah atau unduh berkas untuk dibaca secara offline.</p>
+                <div class="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-600 flex items-center justify-center shrink-0 shadow-2xs">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                            </svg>
                         </div>
-                        <div class="flex items-center gap-2 w-full sm:w-auto">
-                            @if($material->file_path)
-                                <a href="{{ asset('storage/' . $material->file_path) }}" target="_blank" download class="w-full sm:w-auto text-center bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-2">
-                                    <span>⬇️ Unduh PDF</span>
-                                </a>
-                            @elseif($material->url)
-                                <a href="{{ $material->url }}" target="_blank" class="w-full sm:w-auto text-center bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-2">
-                                    <span>Buka PDF di Tab Baru &nearr;</span>
-                                </a>
-                            @endif
+                        <div class="min-w-0 space-y-0.5">
+                            <h4 class="font-bold text-slate-800 text-xs sm:text-sm truncate">Dokumen Modul / PDF</h4>
+                            <p class="text-xs text-slate-500 line-clamp-2">
+                                {{ !empty($material->konten) ? strip_tags($material->konten) : 'Unduh atau buka dokumen untuk mempelajari materi ini.' }}
+                            </p>
                         </div>
                     </div>
-
-                    @if($material->file_path)
-                        <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-inner bg-slate-100">
-                            <iframe src="{{ asset('storage/' . $material->file_path) }}#toolbar=1" class="w-full h-[550px] sm:h-[680px]" frameborder="0"></iframe>
-                        </div>
-                    @endif
+                    <div class="flex items-center gap-2 shrink-0">
+                        @if($material->file_path)
+                            <a href="{{ asset('storage/' . $material->file_path) }}" target="_blank" download class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs transition transform active:scale-95">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                                <span>Unduh PDF</span>
+                            </a>
+                            <a href="{{ asset('storage/' . $material->file_path) }}" target="_blank" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs transition" title="Buka di Tab Baru">
+                                <span>Buka Tab Baru</span>
+                                <svg class="h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                </svg>
+                            </a>
+                        @elseif($material->url)
+                            <a href="{{ $material->url }}" target="_blank" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs transition transform active:scale-95">
+                                <span>Buka Dokumen</span>
+                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                </svg>
+                            </a>
+                        @endif
+                    </div>
                 </div>
             @endif
 
             <!-- Tampilan Link Luar -->
             @if($material->tipe === 'link' && !empty($material->url))
-                <div class="p-5 sm:p-6 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <h4 class="font-bold text-emerald-950 text-sm">Dokumen & Sumber Belajar Eksternal</h4>
-                        <p class="text-xs text-emerald-800">Buka tautan ini untuk membaca atau mempelajari materi pendukung.</p>
+                <div class="p-3 sm:p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="h-8 w-8 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="font-bold text-slate-800 text-xs sm:text-sm truncate">Tautan Referensi Eksternal</h4>
+                            <p class="text-[11px] text-slate-500 truncate">
+                                {{ !empty($material->konten) ? strip_tags($material->konten) : 'Buka sumber belajar pendukung di tab baru' }}
+                            </p>
+                        </div>
                     </div>
-                    <a href="{{ $material->url }}" target="_blank" class="w-full sm:w-auto text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition">
-                        Buka Sumber &nearr;
+                    <a href="{{ $material->url }}" target="_blank" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-slate-300 shadow-2xs transition shrink-0">
+                        <span>Buka Sumber</span>
+                        <svg class="h-3 w-3 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                     </a>
                 </div>
             @endif
 
-            <!-- Konten Teks Bacaan -->
-            @if(!empty($material->konten))
-                <div class="prose prose-slate max-w-none text-slate-700 text-sm sm:text-base leading-relaxed pt-2">
-                    {!! $material->konten !!}
-                </div>
+            <!-- Konten Teks Bacaan / Pengantar -->
+            @if(!empty($material->konten) && !in_array($material->tipe, ['pdf', 'link']))
+                @if($material->tipe === 'video')
+                    <div class="text-xs sm:text-sm text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed">
+                        {!! $material->konten !!}
+                    </div>
+                @else
+                    <div class="prose prose-slate max-w-none text-slate-700 text-xs sm:text-sm leading-relaxed">
+                        {!! $material->konten !!}
+                    </div>
+                @endif
             @endif
 
-            <!-- Desktop Action Bar -->
-            <div class="hidden sm:flex pt-8 border-t border-slate-100 items-center justify-between gap-4">
-                <button wire:click="toggleSelesai" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl font-bold text-xs sm:text-sm shadow-sm transition transform active:scale-95 {{ $isSelesai ? 'bg-slate-100 hover:bg-slate-200 text-slate-700' : 'bg-emerald-600 hover:bg-emerald-700 text-white' }}">
+            <!-- Action Bar Bawah -->
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-start">
+                <button wire:click="toggleSelesai" wire:loading.attr="disabled" type="button" 
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition transform active:scale-95 cursor-pointer shadow-2xs {{ $isSelesai ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200' : 'bg-emerald-600 hover:bg-emerald-700 text-white' }}">
                     @if($isSelesai)
-                        ✓ Tandai Belum Selesai
+                        <svg class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        <span>Tandai Belum Selesai</span>
                     @else
-                        ✅ Saya Sudah Memahami (Tandai Selesai)
+                        <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        <span>Tandai Sudah Dipelajari</span>
                     @endif
                 </button>
-
-                @if($nextMaterial)
-                    <a href="{{ route('siswa.materi.show', $nextMaterial->id) }}" wire:navigate class="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl font-bold text-xs sm:text-sm bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition">
-                        Lanjut Materi: {{ Str::limit($nextMaterial->judul, 25) }} &rarr;
-                    </a>
-                @else
-                    <a href="{{ route('siswa.kelas.show', $material->chapter->class_id) }}" wire:navigate class="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl font-bold text-xs sm:text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                        Kembali ke Silabus &rarr;
-                    </a>
-                @endif
             </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- MOBILE STICKY BOTTOM ACTION BAR                             -->
-    <!-- Sangat ergonomis untuk jempol pengguna di smartphone HP      -->
-    <!-- ============================================================ -->
-    <div class="sm:hidden fixed bottom-14 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200 px-4 py-2.5 shadow-xl flex items-center gap-2">
-        <button wire:click="toggleSelesai" class="flex-1 py-3 px-3 rounded-xl font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5 {{ $isSelesai ? 'bg-slate-100 text-slate-700' : 'bg-emerald-600 text-white' }}">
+    <!-- Mobile Sticky Action Bar -->
+    <div class="sm:hidden fixed bottom-14 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-2.5 shadow-lg flex items-center">
+        <button wire:click="toggleSelesai" wire:loading.attr="disabled" type="button" 
+                class="w-full py-2.5 px-3 rounded-xl font-bold text-xs transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer {{ $isSelesai ? 'bg-slate-100 text-slate-700 border border-slate-200' : 'bg-emerald-600 text-white' }}">
             @if($isSelesai)
-                ✓ Selesai
+                <svg class="h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                <span>Tandai Belum Selesai</span>
             @else
-                ✅ Tandai Selesai
+                <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                <span>Tandai Sudah Dipelajari</span>
             @endif
         </button>
-
-        @if($nextMaterial)
-            <a href="{{ route('siswa.materi.show', $nextMaterial->id) }}" wire:navigate class="py-3 px-3 rounded-xl font-bold text-xs bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0">
-                Lanjut &rarr;
-            </a>
-        @else
-            <a href="{{ route('siswa.kelas.show', $material->chapter->class_id) }}" wire:navigate class="py-3 px-3 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
-                Silabus &rarr;
-            </a>
-        @endif
     </div>
 </div>
