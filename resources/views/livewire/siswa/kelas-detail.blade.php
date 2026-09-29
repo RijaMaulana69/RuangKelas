@@ -307,15 +307,15 @@ new class extends Component {
                 </div>
             </div>
 
-            <!-- Tab Navigasi Terintegrasi -->
-            <div class="px-6 border-t border-slate-100 bg-slate-50/60 flex items-center justify-between gap-3">
-                <nav class="flex items-center gap-1 sm:gap-2 -mb-px">
+            <!-- Tab Navigasi Terintegrasi (Responsif & Mobile-friendly) -->
+            <div class="px-3 sm:px-6 border-t border-slate-100 bg-slate-50/60 flex items-center justify-between gap-3">
+                <nav class="flex items-center gap-1 sm:gap-2 -mb-px overflow-x-auto no-scrollbar py-0.5">
                     <button wire:click="$set('activeTab', 'silabus')" 
-                            class="py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'silabus' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                            class="shrink-0 py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'silabus' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                         Materi Belajar
                     </button>
                     <button wire:click="$set('activeTab', 'nilai')" 
-                            class="py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'nilai' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                            class="shrink-0 py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'nilai' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                         Nilai Saya
                     </button>
                 </nav>
@@ -345,8 +345,6 @@ new class extends Component {
                                  @click="open = !open">
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Bab {{ $index + 1 }}</span>
-                                        <span class="text-slate-300">&bull;</span>
                                         <span class="text-xs text-slate-500 font-medium">
                                             {{ $chapter->materials->count() }} Materi &bull; {{ $chapter->assignments->count() }} Tugas &bull; {{ $chapter->quizzes->count() }} Kuis
                                         </span>
@@ -401,7 +399,7 @@ new class extends Component {
                                                 </button>
                                                 <div class="min-w-0">
                                                     <a href="{{ route('siswa.materi.show', $mat->id) }}" wire:navigate 
-                                                       class="font-bold text-xs sm:text-sm transition truncate block {{ $isDone ? 'line-through text-slate-400 hover:text-slate-600' : 'text-slate-800 hover:text-indigo-600' }}">
+                                                       class="font-bold text-xs sm:text-sm transition break-words sm:truncate block {{ $isDone ? 'line-through text-slate-400 hover:text-slate-600' : 'text-slate-800 hover:text-indigo-600' }}">
                                                         {{ $mat->judul }}
                                                     </a>
                                                     <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5 font-medium">
@@ -445,7 +443,7 @@ new class extends Component {
                                                     </svg>
                                                 </div>
                                                 <div class="min-w-0">
-                                                    <h4 class="font-bold text-xs sm:text-sm text-slate-800 hover:text-amber-700 transition truncate block cursor-pointer" wire:click="openSubmitModal({{ $asg->id }})">
+                                                    <h4 class="font-bold text-xs sm:text-sm text-slate-800 hover:text-amber-700 transition break-words sm:truncate block cursor-pointer" wire:click="openSubmitModal({{ $asg->id }})">
                                                         {{ $asg->judul }}
                                                     </h4>
                                                     <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5 font-medium">
@@ -503,7 +501,7 @@ new class extends Component {
                                                 </div>
                                                 <div class="min-w-0">
                                                     <a href="{{ route('siswa.kuis.show', $quiz->id) }}" wire:navigate 
-                                                       class="font-bold text-xs sm:text-sm text-slate-800 hover:text-purple-700 transition truncate block">
+                                                       class="font-bold text-xs sm:text-sm text-slate-800 hover:text-purple-700 transition break-words sm:truncate block">
                                                         {{ $quiz->judul }}
                                                     </a>
                                                     <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5 font-medium">
@@ -740,94 +738,122 @@ new class extends Component {
         @php
             $existingSub = $mySubmissions->get($selectedAssignment->id);
         @endphp
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3.5 sm:p-4">
-            <div class="bg-white rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-xl border border-slate-100 transition-all">
-                <!-- Header Modal -->
-                <div class="flex items-start justify-between gap-3 border-b border-slate-100 pb-3">
-                    <div class="space-y-0.5">
-                        <h3 class="text-sm sm:text-base font-bold text-slate-900 leading-snug">{{ $selectedAssignment->judul }}</h3>
-                        <p class="text-[11px] text-slate-500">Pengumpulan Tugas Siswa</p>
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 backdrop-blur-xs flex min-h-full items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl shadow-2xl border border-slate-100/80 flex flex-col max-h-[92vh] sm:max-h-[85vh]">
+                {{-- Header --}}
+                <div class="flex items-start justify-between gap-3 px-4 sm:px-5 pt-4 pb-3 border-b border-slate-100 shrink-0">
+                    <div class="min-w-0">
+                        <span class="text-amber-600 font-bold text-[10px] uppercase tracking-wide">Tugas</span>
+                        <h3 class="font-bold text-sm text-slate-900 leading-snug break-words mt-0.5">{{ $selectedAssignment->judul }}</h3>
+                        @if($selectedAssignment->deadline)
+                            <p class="text-[11px] text-slate-400 mt-0.5">Tenggat: <span class="{{ $selectedAssignment->isLewatDeadline() ? 'text-rose-500 font-semibold' : 'text-slate-500' }}">{{ $selectedAssignment->deadline->translatedFormat('d M Y, H:i') }}</span></p>
+                        @endif
                     </div>
-                    <button wire:click="$set('showSubmitModal', false)" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition cursor-pointer text-lg leading-none shrink-0" aria-label="Tutup">&times;</button>
+                    <button wire:click="$set('showSubmitModal', false)" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition cursor-pointer text-xl leading-none shrink-0" aria-label="Tutup">&times;</button>
                 </div>
 
-                <!-- Informasi Soal & Lampiran Tugas -->
-                <div class="text-xs text-slate-600 bg-slate-50/70 rounded-xl p-3 border border-slate-100 space-y-2">
-                    <div class="leading-relaxed">{!! nl2br(e($selectedAssignment->deskripsi ?: 'Tidak ada instruksi khusus.')) !!}</div>
-                    @if($selectedAssignment->file_lampiran)
-                        <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
-                            <span class="text-slate-500">Berkas Soal:</span>
-                            <a href="{{ asset('storage/' . $selectedAssignment->file_lampiran) }}" target="_blank" download class="inline-flex items-center gap-1 font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                <span>Unduh Lampiran &darr;</span>
-                            </a>
+                {{-- Scrollable Body --}}
+                <div class="overflow-y-auto flex-1 px-4 sm:px-5 py-3.5 space-y-3">
+
+                    {{-- Status sudah dikumpulkan / dinilai --}}
+                    @if($existingSub && $existingSub->status === 'graded')
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                            <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 shrink-0">
+                                <span class="text-lg font-black text-emerald-700">{{ $existingSub->nilai }}</span>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-wide">Nilai Kamu</p>
+                                @if($existingSub->catatan_guru)
+                                    <p class="text-[11px] text-emerald-800 leading-relaxed mt-0.5">{{ $existingSub->catatan_guru }}</p>
+                                @endif
+                            </div>
+                        </div>
+                    @elseif($existingSub)
+                        <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-50 border border-indigo-100">
+                            <svg class="w-4 h-4 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <p class="text-[11px] text-indigo-700 font-semibold">Sudah dikumpulkan — menunggu penilaian</p>
                         </div>
                     @endif
+
+                    {{-- Instruksi Tugas (collapsible) --}}
+                    @if($selectedAssignment->deskripsi)
+                        <div x-data="{ open: false }">
+                            <button type="button" @click="open = !open"
+                                    class="flex items-center justify-between w-full text-left text-[11px] font-semibold text-slate-500 hover:text-slate-700 transition cursor-pointer">
+                                <span>Instruksi Tugas</span>
+                                <svg class="w-3.5 h-3.5 transition-transform duration-150" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open" x-transition class="mt-1.5 text-[11px] text-slate-600 bg-slate-50 rounded-xl p-3 border border-slate-100 leading-relaxed">
+                                {!! nl2br(e($selectedAssignment->deskripsi)) !!}
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Lampiran Soal --}}
+                    @if($selectedAssignment->file_lampiran)
+                        <a href="{{ asset('storage/' . $selectedAssignment->file_lampiran) }}" target="_blank" download
+                           class="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 transition text-[11px] text-slate-700 font-semibold">
+                            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Unduh Lampiran Soal
+                        </a>
+                    @endif
+
+                    {{-- Form --}}
+                    <form wire:submit="submitTugas" class="space-y-3" id="form-tugas-siswa">
+
+                        {{-- Upload File --}}
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-700 mb-1">
+                                Berkas Jawaban <span class="font-normal text-slate-400">· PDF, Word, Gambar, ZIP, maks 20MB</span>
+                            </label>
+                            <input type="file" wire:model="fileJawaban"
+                                   class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer border border-slate-200 rounded-xl p-1">
+                            <div wire:loading wire:target="fileJawaban" class="flex items-center gap-1 text-[11px] text-indigo-600 font-medium mt-1">
+                                <svg class="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                                Mengunggah...
+                            </div>
+                            @error('fileJawaban') <span class="text-rose-500 text-[11px] block mt-1">{{ $message }}</span> @enderror
+                            @if($existingSub && $existingSub->file_jawaban && !$fileJawaban)
+                                <a href="{{ asset('storage/' . $existingSub->file_jawaban) }}" target="_blank"
+                                   class="inline-flex items-center gap-1 mt-1 text-[11px] text-indigo-600 hover:underline font-semibold">
+                                    Lihat berkas terkirim &nearr;
+                                </a>
+                            @endif
+                        </div>
+
+                        {{-- Tautan --}}
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-700 mb-1">
+                                Tautan Jawaban <span class="font-normal text-slate-400">(opsional)</span>
+                            </label>
+                            <input type="url" wire:model="linkTugas" placeholder="https://drive.google.com/..."
+                                   class="w-full text-xs rounded-xl border border-slate-200 px-3 py-2 focus:ring-1 focus:ring-indigo-300 focus:border-indigo-400 text-slate-800 placeholder-slate-400 outline-none transition">
+                            @error('linkTugas') <span class="text-rose-500 text-[11px] block mt-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        {{-- Catatan --}}
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-700 mb-1">
+                                Catatan <span class="font-normal text-slate-400">(opsional)</span>
+                            </label>
+                            <textarea wire:model="catatanSiswa" rows="2" placeholder="Pesan singkat untuk guru..."
+                                      class="w-full text-xs rounded-xl border border-slate-200 px-3 py-2 focus:ring-1 focus:ring-indigo-300 focus:border-indigo-400 text-slate-800 placeholder-slate-400 resize-none outline-none transition"></textarea>
+                            @error('catatanSiswa') <span class="text-rose-500 text-[11px] block mt-1">{{ $message }}</span> @enderror
+                        </div>
+                    </form>
                 </div>
 
-                <!-- Nilai & Catatan Guru (Jika sudah dinilai) -->
-                @if($existingSub && $existingSub->status === 'graded')
-                    <div class="p-3 rounded-xl bg-emerald-50/60 border border-emerald-100 text-xs space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-emerald-800 font-medium">Nilai Diperoleh:</span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-xs bg-emerald-100 text-emerald-800">
-                                {{ $existingSub->nilai }} <span class="font-normal text-emerald-600 ml-1">/ 100</span>
-                            </span>
-                        </div>
-                        @if($existingSub->catatan_guru)
-                            <div class="pt-1.5 border-t border-emerald-100 text-[11px] text-emerald-800 leading-relaxed">
-                                <span class="font-semibold text-emerald-900">Catatan Guru:</span> {{ $existingSub->catatan_guru }}
-                            </div>
-                        @endif
-                    </div>
-                @endif
-
-                <!-- Form Pengumpulan Jawaban -->
-                <form wire:submit="submitTugas" class="space-y-3.5">
-                    <!-- Upload File Jawaban -->
-                    <div>
-                        <div class="flex items-center justify-between mb-1">
-                            <label class="text-xs font-semibold text-slate-700">Berkas Jawaban</label>
-                            <span class="text-[10px] text-slate-400">PDF, Word, Gambar, ZIP (Maks 20MB)</span>
-                        </div>
-                        <input type="file" wire:model="fileJawaban" class="w-full text-xs text-slate-600 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer border border-slate-200 rounded-xl p-1 bg-white">
-                        <div wire:loading wire:target="fileJawaban" class="text-[11px] text-indigo-600 font-medium mt-1">Mengunggah berkas...</div>
-                        @error('fileJawaban') <span class="text-rose-500 text-[11px] font-medium block mt-1">{{ $message }}</span> @enderror
-
-                        @if($existingSub && $existingSub->file_jawaban && !$fileJawaban)
-                            <div class="mt-1.5 text-[11px] text-slate-500 flex items-center gap-1.5">
-                                <span>Berkas terkirim:</span>
-                                <a href="{{ asset('storage/' . $existingSub->file_jawaban) }}" target="_blank" class="font-semibold text-indigo-600 hover:underline inline-flex items-center gap-0.5">
-                                    <span>Lihat Berkas</span> &nearr;
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Input Link Tugas Eksternal (Opsional) -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan Jawaban <span class="font-normal text-slate-400">(Opsional)</span></label>
-                        <input type="url" wire:model="linkTugas" placeholder="https://drive.google.com/..." class="w-full text-xs rounded-xl border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 text-slate-800 placeholder-slate-400">
-                        @error('linkTugas') <span class="text-rose-500 text-[11px] font-medium block mt-1">{{ $message }}</span> @enderror
-                    </div>
-
-                    <!-- Catatan / Jawaban Teks -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Tambahan <span class="font-normal text-slate-400">(Opsional)</span></label>
-                        <textarea wire:model="catatanSiswa" rows="2" placeholder="Tuliskan catatan singkat jika ada..." class="w-full text-xs rounded-xl border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 text-slate-800 placeholder-slate-400 resize-none"></textarea>
-                        @error('catatanSiswa') <span class="text-rose-500 text-[11px] font-medium block mt-1">{{ $message }}</span> @enderror
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex items-center justify-end gap-2 pt-2.5 border-t border-slate-100">
-                        <button type="button" wire:click="$set('showSubmitModal', false)" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
-                            Tutup
-                        </button>
-                        <button type="submit" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer">
-                            <span>{{ $existingSub ? 'Perbarui Pengumpulan' : 'Kirim Jawaban' }}</span>
-                        </button>
-                    </div>
-                </form>
+                {{-- Footer Tombol --}}
+                <div class="flex items-center gap-2.5 px-4 sm:px-5 py-3 border-t border-slate-100 shrink-0">
+                    <button type="button" wire:click="$set('showSubmitModal', false)"
+                            class="flex-1 py-2.5 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit" form="form-tugas-siswa"
+                            class="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 active:bg-amber-700 shadow-xs transition active:scale-95 cursor-pointer">
+                        {{ $existingSub ? 'Perbarui' : 'Kirim Jawaban' }}
+                    </button>
+                </div>
             </div>
         </div>
     @endif

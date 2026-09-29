@@ -363,8 +363,8 @@ new class extends Component {
     <!-- MODAL GABUNG KELAS BARU (Elegan, Sederhana & Ramah)          -->
     <!-- ============================================================ -->
     @if($showGabungModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+            <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex min-h-full items-center justify-center p-3 sm:p-4">
+                <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-100 my-auto animate-in fade-in zoom-in-95 duration-200">
                 
                 <!-- Modal Header -->
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">

@@ -820,31 +820,32 @@ new class extends Component {
                 </div>
             </div>
 
-            <!-- Tab Navigasi Terintegrasi -->
-            <div class="px-6 border-t border-slate-100 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <nav class="flex items-center gap-1 sm:gap-2 -mb-px">
+            <!-- Tab Navigasi Terintegrasi (Responsif & Mobile-friendly) -->
+            <div class="px-3 sm:px-6 border-t border-slate-100 bg-slate-50/60 flex items-center justify-between gap-2 sm:gap-3">
+                <nav class="flex items-center gap-1 sm:gap-2 -mb-px overflow-x-auto no-scrollbar py-0.5">
                     <button wire:click="$set('activeTab', 'kurikulum')"
-                            class="py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'kurikulum' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                            class="shrink-0 py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'kurikulum' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                         Kurikulum
                     </button>
                     <button wire:click="$set('activeTab', 'siswa')"
-                            class="py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer flex items-center gap-1.5 {{ $activeTab === 'siswa' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                            class="shrink-0 py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer flex items-center gap-1.5 {{ $activeTab === 'siswa' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                         <span>Siswa</span>
                         <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold {{ $activeTab === 'siswa' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-600' }}">
                             {{ $siswaList->count() }}
                         </span>
                     </button>
                     <button wire:click="$set('activeTab', 'nilai')"
-                            class="py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'nilai' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                            class="shrink-0 py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'nilai' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                         Penilaian Siswa
                     </button>
                 </nav>
 
                 @if ($activeTab === 'kurikulum')
-                    <div class="py-2 self-end sm:self-center">
-                        <button wire:click="openCreateChapter" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs shadow-xs transition active:scale-95 cursor-pointer">
+                    <div class="py-2 shrink-0">
+                        <button wire:click="openCreateChapter" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-xl text-xs shadow-xs transition active:scale-95 cursor-pointer">
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                            <span>Tambah Bab</span>
+                            <span class="hidden sm:inline">Tambah Bab</span>
+                            <span class="sm:hidden">Bab</span>
                         </button>
                     </div>
                 @endif
@@ -859,36 +860,36 @@ new class extends Component {
                 @forelse ($kelas->chapters as $index => $chapter)
                     <div x-data="{ open: true }" class="bg-white rounded-2xl border-2 border-slate-200/90 shadow-xs overflow-hidden transition-all">
                         <!-- Header Bab (Clickable to collapse) -->
-                        <div class="px-5 py-4 flex items-center justify-between gap-3 cursor-pointer select-none bg-white hover:bg-slate-50/70 transition" @click="open = !open">
+                        <div class="p-4 sm:px-5 sm:py-4 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer select-none bg-white hover:bg-slate-50/70 transition" @click="open = !open">
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Bab {{ $index + 1 }}</span>
-                                    <span class="text-slate-300">&bull;</span>
                                     <span class="text-xs text-slate-500 font-medium">
                                         {{ $chapter->materials->count() }} Materi &bull; {{ $chapter->assignments->count() }} Tugas &bull; {{ $chapter->quizzes->count() }} Kuis
                                     </span>
                                 </div>
-                                <h3 class="font-bold text-sm sm:text-base text-slate-900 truncate mt-0.5">{{ $chapter->judul }}</h3>
+                                <h3 class="font-bold text-sm sm:text-base text-slate-900 break-words md:truncate mt-0.5">{{ $chapter->judul }}</h3>
                                 @if ($chapter->deskripsi)
                                     <p class="text-xs text-slate-500 mt-0.5 line-clamp-1">{{ $chapter->deskripsi }}</p>
                                 @endif
                             </div>
 
                             <!-- Aksi Bab di Sisi Kanan: Edit Bab, Hapus Bab & Panah Dropdown -->
-                            <div class="flex items-center gap-2 shrink-0">
-                                <button @click.stop wire:click="openEditChapter({{ $chapter->id }})" 
-                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition cursor-pointer" 
-                                        title="Edit Bab">
-                                    <svg class="h-3.5 w-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                                    <span>Edit</span>
-                                </button>
+                            <div class="flex items-center justify-between md:justify-end gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+                                <div class="flex items-center gap-1.5">
+                                    <button @click.stop wire:click="openEditChapter({{ $chapter->id }})" 
+                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition cursor-pointer" 
+                                            title="Edit Bab">
+                                        <svg class="h-3.5 w-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                        <span>Edit</span>
+                                    </button>
 
-                                <button type="button" @click.stop="confirmDelete('Hapus Bab Ini?', 'Bab beserta seluruh materi, tugas, dan kuis di dalamnya akan dihapus.', () => $wire.hapusChapter({{ $chapter->id }}))" 
-                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition cursor-pointer" 
-                                        title="Hapus Bab">
-                                    <svg class="h-3.5 w-3.5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    <span>Hapus</span>
-                                </button>
+                                    <button type="button" @click.stop="confirmDelete('Hapus Bab Ini?', 'Bab beserta seluruh materi, tugas, dan kuis di dalamnya akan dihapus.', () => $wire.hapusChapter({{ $chapter->id }}))" 
+                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition cursor-pointer" 
+                                            title="Hapus Bab">
+                                        <svg class="h-3.5 w-3.5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <span>Hapus</span>
+                                    </button>
+                                </div>
 
                                 <div class="p-1 rounded-lg text-slate-400 group-hover:text-slate-600">
                                     <svg class="h-4 w-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -897,10 +898,10 @@ new class extends Component {
                         </div>
 
                         <!-- Konten Bab (Collapsible) dengan Latar Kontras agar Tidak Menyatu -->
-                        <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="border-t-2 border-slate-100 bg-slate-50/70 p-4 sm:p-5 space-y-3">
+                        <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="border-t-2 border-slate-100 bg-slate-50/70 p-3 sm:p-5 space-y-3">
                             
                             <!-- Header Isi Bab: Ringkasan Item & Tombol Aksi Tambah di Sebelah Kanan -->
-                            <div class="flex items-center justify-between gap-3 pb-2.5 border-b border-slate-200/80">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200/80">
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">Isi Pembelajaran</span>
                                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-slate-600 border border-slate-200">
@@ -934,24 +935,17 @@ new class extends Component {
                             <div class="space-y-2">
                                 <!-- 1. List Materi Pembelajaran -->
                                 @foreach ($chapter->materials as $mat)
-                                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white border border-slate-200/90 hover:border-indigo-300 shadow-2xs transition">
-                                        <div class="flex items-center gap-3 min-w-0">
-                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0
-                                                @if($mat->tipe === 'pdf') bg-rose-50 text-rose-700 border border-rose-200
-                                                @elseif($mat->tipe === 'video') bg-red-50 text-red-700 border border-red-200
-                                                @elseif($mat->tipe === 'link') bg-blue-50 text-blue-700 border border-blue-200
-                                                @else bg-indigo-50 text-indigo-700 border border-indigo-200
-                                                @endif">
-                                                Materi &bull; {{ $mat->tipe }}
-                                            </span>
-                                            <div class="min-w-0">
-                                                <button wire:click="openEditMaterial({{ $mat->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-indigo-600 transition text-left cursor-pointer truncate block" title="Klik untuk edit materi">
-                                                    {{ $mat->judul }}
-                                                </button>
-                                            </div>
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5 md:gap-3 p-3 sm:p-3.5 rounded-xl bg-white border border-slate-200/90 hover:border-indigo-300 shadow-2xs transition">
+                                        <div class="min-w-0 flex-1">
+                                            <button wire:click="openEditMaterial({{ $mat->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-indigo-600 transition text-left cursor-pointer break-words md:truncate block w-full" title="Klik untuk edit materi">
+                                                {{ $mat->judul }}
+                                            </button>
+                                            <p class="text-[11px] font-bold mt-0.5 uppercase tracking-wide text-indigo-600">
+                                                Materi <span class="text-slate-300 font-normal">&bull;</span> <span class="{{ $mat->tipe === 'video' ? 'text-sky-600' : ($mat->tipe === 'pdf' ? 'text-rose-600' : 'text-indigo-500') }} font-semibold">{{ $mat->tipe }}</span>
+                                            </p>
                                         </div>
-                                        <!-- Aksi CRUD Sebelah Kanan & Jelas (Bukan Abu-Abu) -->
-                                        <div class="flex items-center gap-1.5 shrink-0">
+                                        <!-- Aksi CRUD Sebelah Kanan (Responsive di Mobile) -->
+                                        <div class="flex items-center justify-end gap-1.5 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
                                             <button wire:click="openEditMaterial({{ $mat->id }})" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition cursor-pointer" title="Edit Materi">
                                                 <svg class="h-3.5 w-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                                                 <span>Edit</span>
@@ -971,31 +965,26 @@ new class extends Component {
                                         $gradedCount = $asg->submissions->where('status', 'graded')->count();
                                         $ungradedCount = $subCount - $gradedCount;
                                     @endphp
-                                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white border border-slate-200/90 hover:border-amber-300 shadow-2xs transition">
-                                        <div class="flex items-center gap-3 min-w-0">
-                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0 bg-amber-50 text-amber-800 border border-amber-200">
-                                                Tugas
-                                            </span>
-                                            <div class="min-w-0">
-                                                <button wire:click="openGrading({{ $asg->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-amber-700 transition text-left cursor-pointer truncate block" title="Periksa tugas siswa">
-                                                    {{ $asg->judul }}
-                                                </button>
-                                                <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 mt-0.5">
-                                                    <span class="font-bold {{ $ungradedCount > 0 ? 'text-amber-800' : 'text-slate-600' }}">{{ $subCount }} dikumpulkan</span>
-                                                    @if($asg->deadline)
-                                                        <span>&bull;</span>
-                                                        <span class="{{ $asg->isLewatDeadline() ? 'text-rose-600 font-bold' : '' }}">Tenggat: {{ $asg->deadline->translatedFormat('d M H:i') }}</span>
-                                                    @endif
-                                                    @if($ungradedCount > 0)
-                                                        <span class="px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold text-[10px]">{{ $ungradedCount }} perlu dinilai</span>
-                                                    @elseif($subCount > 0)
-                                                        <span class="text-emerald-600 font-bold text-[10px]">✓ Dinilai</span>
-                                                    @endif
-                                                </div>
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5 md:gap-3 p-3 sm:p-3.5 rounded-xl bg-white border border-slate-200/90 hover:border-amber-300 shadow-2xs transition">
+                                        <div class="min-w-0 flex-1">
+                                            <button wire:click="openGrading({{ $asg->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-amber-700 transition text-left cursor-pointer break-words md:truncate block w-full" title="Periksa tugas siswa">
+                                                {{ $asg->judul }}
+                                            </button>
+                                            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] text-slate-500 mt-0.5">
+                                                <span class="text-amber-600 font-bold uppercase tracking-wide">Tugas</span>
+                                                <span class="text-slate-300 font-normal">&bull;</span>
+                                                <span class="font-bold {{ $ungradedCount > 0 ? 'text-amber-800' : 'text-slate-600' }}">{{ $subCount }} dikumpulkan</span>
+                                                @if($asg->deadline)
+                                                    <span>&bull;</span>
+                                                    <span class="{{ $asg->isLewatDeadline() ? 'text-rose-600 font-bold' : '' }}">Tenggat: {{ $asg->deadline->translatedFormat('d M H:i') }}</span>
+                                                @endif
+                                                @if($ungradedCount > 0)
+                                                    <span class="px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold text-[10px]">{{ $ungradedCount }} perlu dinilai</span>
+                                                @endif
                                             </div>
                                         </div>
-                                        <!-- Aksi CRUD Sebelah Kanan & Jelas (Bukan Abu-Abu) -->
-                                        <div class="flex items-center gap-1.5 shrink-0">
+                                        <!-- Aksi CRUD Sebelah Kanan (Responsive di Mobile) -->
+                                        <div class="flex items-center justify-end gap-1.5 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 flex-wrap">
                                             <button wire:click="openGrading({{ $asg->id }})" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-amber-800 bg-amber-100 hover:bg-amber-200 border border-amber-300 transition cursor-pointer" title="Periksa & Beri Nilai">
                                                 <svg class="h-3.5 w-3.5 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                                 <span>Nilai ({{ $subCount }})</span>
@@ -1018,30 +1007,23 @@ new class extends Component {
                                         $completedAttempts = $quiz->attempts->where('status', 'selesai');
                                         $attemptCount = $completedAttempts->count();
                                     @endphp
-                                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white border border-slate-200/90 hover:border-purple-300 shadow-2xs transition">
-                                        <div class="flex items-center gap-3 min-w-0">
-                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider shrink-0 bg-purple-50 text-purple-800 border border-purple-200">
-                                                Kuis
-                                            </span>
-                                            <div class="min-w-0">
-                                                <button wire:click="openEditQuiz({{ $quiz->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-purple-700 transition text-left cursor-pointer truncate block" title="Edit kuis & kelola soal">
-                                                    {{ $quiz->judul }}
-                                                </button>
-                                                <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 mt-0.5">
-                                                    <span class="font-bold text-purple-700">{{ $quiz->questions->count() }} Soal</span>
-                                                    <span>&bull;</span>
-                                                    <span>⏱️ {{ $quiz->durasi_menit }} mnt</span>
-                                                    <span>&bull;</span>
-                                                    <span>KKM: <b class="text-slate-700">{{ $quiz->kkm }}</b></span>
-                                                    @if($attemptCount > 0)
-                                                        <span>&bull;</span>
-                                                        <span class="px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-900 font-bold text-[10px]">{{ $attemptCount }} siswa mengerjakan</span>
-                                                    @endif
-                                                </div>
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5 md:gap-3 p-3 sm:p-3.5 rounded-xl bg-white border border-slate-200/90 hover:border-purple-300 shadow-2xs transition">
+                                        <div class="min-w-0 flex-1">
+                                            <button wire:click="openEditQuiz({{ $quiz->id }})" class="font-bold text-xs sm:text-sm text-slate-800 hover:text-purple-700 transition text-left cursor-pointer break-words md:truncate block w-full" title="Edit kuis & kelola soal">
+                                                {{ $quiz->judul }}
+                                            </button>
+                                            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] text-slate-500 mt-0.5">
+                                                <span class="text-purple-600 font-bold uppercase tracking-wide">Kuis</span>
+                                                <span class="text-slate-300 font-normal">&bull;</span>
+                                                <span class="font-bold text-purple-700">{{ $quiz->questions->count() }} Soal</span>
+                                                <span>&bull;</span>
+                                                <span>⏱️ {{ $quiz->durasi_menit }} mnt</span>
+                                                <span>&bull;</span>
+                                                <span>KKM: <b class="text-slate-700">{{ $quiz->kkm }}</b></span>
                                             </div>
                                         </div>
-                                        <!-- Aksi CRUD Sebelah Kanan: Hasil Siswa, Edit Kuis, Hapus -->
-                                        <div class="flex items-center gap-1.5 shrink-0">
+                                        <!-- Aksi CRUD Sebelah Kanan (Responsive di Mobile) -->
+                                        <div class="flex items-center justify-end gap-1.5 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 flex-wrap">
                                             <button wire:click="openQuizResults({{ $quiz->id }})" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 transition cursor-pointer" title="Lihat Siswa yang Sudah Mengerjakan">
                                                 <svg class="h-3.5 w-3.5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                                 <span>Hasil ({{ $attemptCount }})</span>
@@ -1287,8 +1269,8 @@ new class extends Component {
     <!-- MODAL 1: TAMBAH / EDIT BAB                                   -->
     <!-- ============================================================ -->
     @if ($showChapterModal)
-        <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl border border-slate-100">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex min-h-full items-center justify-center p-3 sm:p-4">
+            <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-8 space-y-5 shadow-2xl border border-slate-100 my-auto">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                     <h3 class="font-black text-lg text-slate-900">{{ $chapterId ? 'Edit Bab' : 'Tambah Bab Baru' }}</h3>
                     <button wire:click="$set('showChapterModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
@@ -1319,8 +1301,8 @@ new class extends Component {
     <!-- MODAL 2: TAMBAH / EDIT MATERI (PDF / LINK / VIDEO / TEKS)   -->
     <!-- ============================================================ -->
     @if ($showMaterialModal)
-        <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-5 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex min-h-full items-center justify-center p-3 sm:p-4">
+            <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-8 space-y-5 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto my-auto">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                     <h3 class="font-black text-lg text-slate-900">{{ $materialId ? 'Edit Materi' : 'Tambah Materi Baru' }}</h3>
                     <button wire:click="$set('showMaterialModal', false)" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
@@ -1423,8 +1405,8 @@ new class extends Component {
     <!-- MODAL 3: TAMBAH / EDIT Tugas (ASSIGNMENT)                     -->
     <!-- ============================================================ -->
     @if ($showAssignmentModal)
-        <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 space-y-5 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex min-h-full items-center justify-center p-3 sm:p-4">
+            <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-7 space-y-5 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto my-auto">
                 <!-- Header Modal -->
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div>
@@ -1493,8 +1475,8 @@ new class extends Component {
     @endif
 
     @if ($showGradingModal && $selectedAssignment)
-        <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-            <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 max-h-[92vh] flex flex-col overflow-hidden">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex min-h-full items-center justify-center p-2.5 sm:p-4">
+            <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 max-h-[92vh] flex flex-col overflow-hidden my-auto">
 
                 {{-- Header Modal Penilaian Tugas (Sederhana & Bersih) --}}
                 <div class="px-6 py-3.5 border-b border-slate-100 flex items-center justify-between gap-3 shrink-0 bg-white">
@@ -1698,8 +1680,8 @@ new class extends Component {
     <!-- MODAL 5: TAMBAH / EDIT KUIS & KELOLA SOAL (SEDERHANA & MUDAH) -->
     <!-- ============================================================ -->
     @if ($showQuizModal)
-        <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-            <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 max-h-[92vh] flex flex-col overflow-hidden">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex min-h-full items-center justify-center p-2.5 sm:p-4">
+            <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 max-h-[92vh] flex flex-col overflow-hidden my-auto">
                 
                 {{-- Header Utama Modal (Sederhana & Bersih) --}}
                 <div class="px-6 py-3.5 border-b border-slate-100 flex items-center justify-between gap-3 shrink-0 bg-white">
@@ -2040,8 +2022,8 @@ new class extends Component {
             $totalBelumTuntas = $totalMengerjakan - $totalTuntas;
         @endphp
 
-        <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-            <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 max-h-[92vh] flex flex-col overflow-hidden">
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex min-h-full items-center justify-center p-2.5 sm:p-4">
+            <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 max-h-[92vh] flex flex-col overflow-hidden my-auto">
                 
                 {{-- Header Modal Hasil Siswa (Sederhana & Bersih) --}}
                 <div class="px-6 py-3.5 border-b border-slate-100 flex items-center justify-between gap-3 shrink-0 bg-white">

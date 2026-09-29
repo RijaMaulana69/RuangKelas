@@ -5,12 +5,18 @@
 @tailwind utilities;
 
 @layer base {
+    html {
+        touch-action: manipulation;
+        -webkit-text-size-adjust: 100%;
+    }
+
     body {
         font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
         color: #1e293b;
         background-color: #f8fafc;
         -webkit-font-smoothing: antialiased;
         -webkit-tap-highlight-color: transparent;
+        overflow-x: hidden;
     }
 
     /* Hilangkan icon reveal bawaan Edge/Windows agar tidak bentrok dengan toggle custom */
@@ -18,6 +24,15 @@
     input::-ms-clear {
         display: none;
     }
+}
+
+/* Utility to hide scrollbar while preserving touch scrollability */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 /* Glassmorphism Utilities */

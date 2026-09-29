@@ -2,8 +2,14 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="theme-color" content="#0f172a">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="RuangKelas">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
 
         <title>{{ config('app.name', 'RuangKelas') }} - Platform Pembelajaran Interaktif</title>
 
@@ -21,10 +27,10 @@
             <!-- ============================================================ -->
             <!-- 1. TOP HEADER APP BAR (BERSIH, PROFESIONAL, ELEGAN)          -->
             <!-- ============================================================ -->
-            <header class="sticky top-0 z-30 bg-slate-900 border-b border-slate-800 h-[70px] px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-md text-white">
+            <header class="sticky top-0 z-30 bg-slate-900 border-b border-slate-800 h-[70px] px-3 sm:px-6 lg:px-8 flex items-center justify-between shadow-md text-white">
                 
-                <!-- Sisi Kiri: Hamburger + Brand Logo + Judul Halaman -->
-                <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+                <!-- Sisi Kiri: Brand Logo + Judul Halaman -->
+                <div class="flex items-center gap-2 sm:gap-4 min-w-0">
 
                     <!-- Brand Logo RuangKelas (Sinkron Landing Page) -->
                     <a href="{{ route('dashboard') }}" wire:navigate class="inline-flex items-center gap-2 sm:gap-2.5 group shrink-0">
@@ -151,16 +157,16 @@
                 @include('layouts.sidebar')
 
                 <!-- AREA KONTEN UTAMA -->
-                <main class="flex-1 bg-slate-50/70 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto">
+                <main class="flex-1 bg-slate-50/70 p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8 min-w-0 overflow-y-auto">
                     {{ $slot }}
                 </main>
             </div>
         </div>
 
         <!-- ============================================================ -->
-        <!-- MOBILE BOTTOM NAVIGATION BAR (Khusus Layar Kecil Smartphone) -->
+        <!-- MOBILE & TABLET BOTTOM NAVIGATION BAR (< 1024px)             -->
         <!-- ============================================================ -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 shadow-2xl px-4 py-2 flex items-center justify-around text-slate-300">
+        <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 shadow-2xl px-4 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] flex items-center justify-around text-slate-300">
             @php
                 $isGuru = auth()->check() && auth()->user()->hasRole('guru');
                 $isSiswa = auth()->check() && auth()->user()->hasRole('siswa');

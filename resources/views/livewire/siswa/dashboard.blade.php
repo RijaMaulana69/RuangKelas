@@ -417,11 +417,11 @@ new class extends Component {
     <!-- MODAL GABUNG KELAS (BERSIH & MINIMALIS)                      -->
     <!-- ============================================================ -->
     @if ($showJoinModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex min-h-full items-center justify-center p-3 sm:p-4"
              x-data
              x-trap="true"
              @keydown.escape.window="$wire.closeJoinModal()">
-            <div class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-200 p-6 space-y-5 transition-all animate-in fade-in zoom-in-95 duration-200">
+            <div class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-200 p-6 space-y-5 transition-all my-auto animate-in fade-in zoom-in-95 duration-200">
                 
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
