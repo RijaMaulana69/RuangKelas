@@ -331,11 +331,6 @@ new class extends Component {
                         <p class="text-xs text-slate-500 max-w-sm mx-auto">
                             Masukkan kode kelas dari guru pengajar Anda untuk mulai mengikuti kegiatan belajar.
                         </p>
-                        <button type="button" 
-                                wire:click="openJoinModal" 
-                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition cursor-pointer mt-1">
-                            <span>Gabung Kelas Sekarang</span>
-                        </button>
                     @endif
                 </div>
             @else

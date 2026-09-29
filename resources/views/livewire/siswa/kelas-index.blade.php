@@ -219,12 +219,6 @@ new class extends Component {
                         <h3 class="text-base font-bold text-slate-800">Kamu Belum Mengikuti Kelas</h3>
                         <p class="text-xs text-slate-400 max-w-sm mx-auto">Mintalah kode kelas kepada guru pengajar, lalu klik tombol Gabung Kelas untuk mulai belajar.</p>
                     </div>
-                    <button wire:click="openGabungModal" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span>Gabung Kelas Sekarang</span>
-                    </button>
                 @endif
             </div>
         @else

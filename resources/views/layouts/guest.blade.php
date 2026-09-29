@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="min-h-full scroll-smooth">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
@@ -16,8 +16,11 @@
         <!-- Scripts & Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased text-slate-800 bg-gradient-to-br from-indigo-100/90 via-slate-100/80 to-purple-100/70 min-h-screen selection:bg-indigo-600 selection:text-white relative overflow-x-hidden flex flex-col justify-between">
+    <body class="font-sans antialiased text-slate-800 min-h-screen selection:bg-indigo-600 selection:text-white relative overflow-x-hidden flex flex-col justify-between">
         
+        <!-- Fixed Seamless Background Gradient (Menutupi seluruh layar & tidak terpotong saat scroll) -->
+        <div class="fixed inset-0 bg-gradient-to-br from-indigo-100/90 via-slate-100/80 to-purple-100/70 pointer-events-none -z-20"></div>
+
         <!-- Ambient Decorative Glows (Selaras dengan Tema Indigo RuangKelas) -->
         <div class="fixed -top-20 -left-20 w-80 sm:w-[450px] h-80 sm:h-[450px] bg-indigo-300/35 rounded-full blur-3xl pointer-events-none -z-10"></div>
         <div class="fixed top-1/3 -right-20 w-80 sm:w-[450px] h-80 sm:h-[450px] bg-purple-300/30 rounded-full blur-3xl pointer-events-none -z-10"></div>

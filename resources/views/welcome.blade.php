@@ -224,7 +224,7 @@
                                                 </svg>
                                                 <span id="hero-quiz-num" class="text-xs font-black text-indigo-600">3</span>
                                             </span>
-                                            <span class="font-bold text-slate-900 text-xs sm:text-sm truncate group-hover/quiz:text-indigo-600 transition-colors">3. Kuis Evaluasi Pemahaman Bab</span>
+                                            <span class="font-bold text-slate-900 text-xs sm:text-sm truncate group-hover/quiz:text-indigo-600 transition-colors">3. Kuis Pemahaman Bab</span>
                                         </div>
                                         <span id="hero-quiz-status" class="text-[11px] font-bold px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all shrink-0">
                                             Mulai Kuis

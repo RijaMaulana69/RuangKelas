@@ -15,6 +15,8 @@ new #[Layout('layouts.guest')] class extends Component
      */
     public function fillDemo(string $role): void
     {
+        $this->resetValidation();
+
         if ($role === 'guru') {
             $this->form->email = 'guru@ruangkelas.test';
             $this->form->password = 'password';
@@ -31,6 +33,7 @@ new #[Layout('layouts.guest')] class extends Component
      */
     public function clearDemo(): void
     {
+        $this->resetValidation();
         $this->form->email = '';
         $this->form->password = '';
         $this->demoSelected = '';
@@ -49,13 +52,15 @@ new #[Layout('layouts.guest')] class extends Component
 
         $user = auth()->user();
 
+        // Tentukan default dashboard sesuai role jika tidak ada intended URL sebelumnya
+        $defaultRoute = route('dashboard', absolute: false);
         if ($user->hasRole('guru')) {
-            $this->redirectRoute('guru.dashboard', navigate: true);
+            $defaultRoute = route('guru.dashboard', absolute: false);
         } elseif ($user->hasRole('siswa')) {
-            $this->redirectRoute('siswa.dashboard', navigate: true);
-        } else {
-            $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+            $defaultRoute = route('siswa.dashboard', absolute: false);
         }
+
+        $this->redirectIntended(default: $defaultRoute, navigate: true);
     }
 }; ?>
 
@@ -76,8 +81,8 @@ new #[Layout('layouts.guest')] class extends Component
             </p>
         </div>
 
-        <!-- Status Sesi Flash -->
-        <x-auth-session-status class="mb-2" :status="session('status')" />
+        <!-- Status Sesi Flash (Notifikasi Pendaftaran / Info) -->
+        <x-auth-session-status class="mb-2" :status="session('status') ?? session('success')" />
 
 
         <!-- FORM LOGIN -->

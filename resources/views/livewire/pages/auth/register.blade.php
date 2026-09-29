@@ -2,9 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
@@ -24,8 +22,20 @@ new #[Layout('layouts.guest')] class extends Component
         $validated = $this->validate([
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'string', 'min:6', 'max:8', 'confirmed'],
             'role'     => ['required', 'in:guru,siswa'],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama lengkap maksimal 255 karakter.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Alamat email ini sudah terdaftar.',
+            'password.required' => 'Kata sandi wajib diisi.',
+            'password.min' => 'Kata sandi minimal 6 karakter.',
+            'password.max' => 'Kata sandi maksimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'role.required' => 'Pilih peran akun (Siswa atau Guru).',
+            'role.in' => 'Peran akun tidak valid.',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -36,10 +46,10 @@ new #[Layout('layouts.guest')] class extends Component
         // Assign role yang dipilih
         $user->assignRole($this->role);
 
-        Auth::login($user);
+        // Jangan langsung login. Kirim pesan notifikasi flash status dan arahkan ke login.
+        session()->flash('status', 'Pendaftaran akun berhasil! Silakan masuk dengan email dan kata sandi Anda.');
 
-        // Arahkan ke dashboard sesuai role
-        $this->redirectRoute('dashboard', navigate: true);
+        $this->redirectRoute('login', navigate: true);
     }
 }; ?>
 
@@ -62,27 +72,6 @@ new #[Layout('layouts.guest')] class extends Component
 
         <form wire:submit="register" class="space-y-4">
             
-            <!-- Pemilihan Role: Clean Sederhana Teks Aja (Label: Pilih Role) -->
-            <div class="space-y-1.5">
-                <label class="block text-xs sm:text-sm font-bold text-slate-700">
-                    Pilih Role
-                </label>
-                <div class="grid grid-cols-2 gap-2">
-                    <!-- Pilihan Siswa -->
-                    <label class="relative flex cursor-pointer rounded-xl border py-2.5 px-3 transition text-center items-center justify-center font-bold text-xs sm:text-sm select-none {{ $role === 'siswa' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100 shadow-2xs' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-600' }}">
-                        <input wire:model.live="role" type="radio" name="role" value="siswa" class="sr-only">
-                        <span>Siswa</span>
-                    </label>
-
-                    <!-- Pilihan Guru -->
-                    <label class="relative flex cursor-pointer rounded-xl border py-2.5 px-3 transition text-center items-center justify-center font-bold text-xs sm:text-sm select-none {{ $role === 'guru' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100 shadow-2xs' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-600' }}">
-                        <input wire:model.live="role" type="radio" name="role" value="guru" class="sr-only">
-                        <span>Guru</span>
-                    </label>
-                </div>
-                <x-input-error :messages="$errors->get('role')" class="mt-1 text-xs text-rose-600" />
-            </div>
-
             <!-- Nama Lengkap -->
             <div class="space-y-1.5">
                 <label for="name" class="block text-xs sm:text-sm font-bold text-slate-700">
@@ -127,8 +116,10 @@ new #[Layout('layouts.guest')] class extends Component
                            :type="showPassword ? 'text' : 'password'"
                            name="password"
                            required
+                           minlength="6"
+                           maxlength="8"
                            autocomplete="new-password"
-                           placeholder="Minimal 8 karakter"
+                           placeholder="Masukkan kata sandi"
                            class="w-full pl-3.5 sm:pl-4 pr-11 py-2.5 sm:py-3 rounded-xl border border-slate-300 text-slate-900 text-xs sm:text-sm placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition outline-none bg-white">
 
                     <!-- Tombol Show/Hide Password Clean & Responsive -->
@@ -164,6 +155,8 @@ new #[Layout('layouts.guest')] class extends Component
                            :type="showPasswordConfirm ? 'text' : 'password'"
                            name="password_confirmation"
                            required
+                           minlength="6"
+                           maxlength="8"
                            autocomplete="new-password"
                            placeholder="Ulangi kata sandi"
                            class="w-full pl-3.5 sm:pl-4 pr-11 py-2.5 sm:py-3 rounded-xl border border-slate-300 text-slate-900 text-xs sm:text-sm placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition outline-none bg-white">
@@ -188,6 +181,27 @@ new #[Layout('layouts.guest')] class extends Component
                     </button>
                 </div>
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1 text-xs text-rose-600" />
+            </div>
+
+            <!-- Pemilihan Role: Dipindahkan ke Bawah Setelah Konfirmasi Kata Sandi -->
+            <div class="space-y-1.5">
+                <label class="block text-xs sm:text-sm font-bold text-slate-700">
+                    Pilih Role
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                    <!-- Pilihan Siswa -->
+                    <label class="relative flex cursor-pointer rounded-xl border py-2.5 px-3 transition text-center items-center justify-center font-bold text-xs sm:text-sm select-none {{ $role === 'siswa' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100 shadow-2xs' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-600' }}">
+                        <input wire:model.live="role" type="radio" name="role" value="siswa" class="sr-only">
+                        <span>Siswa</span>
+                    </label>
+
+                    <!-- Pilihan Guru -->
+                    <label class="relative flex cursor-pointer rounded-xl border py-2.5 px-3 transition text-center items-center justify-center font-bold text-xs sm:text-sm select-none {{ $role === 'guru' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-100 shadow-2xs' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-600' }}">
+                        <input wire:model.live="role" type="radio" name="role" value="guru" class="sr-only">
+                        <span>Guru</span>
+                    </label>
+                </div>
+                <x-input-error :messages="$errors->get('role')" class="mt-1 text-xs text-rose-600" />
             </div>
 
             <!-- Tombol Aksi: Cukup "Daftar" -->
