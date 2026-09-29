@@ -6,19 +6,37 @@ use App\Models\Enrollment;
 use Livewire\Volt\Component;
 
 new class extends Component {
+    public string $search = '';
+
+    public function resetSearch(): void
+    {
+        $this->search = '';
+    }
+
     public function with(): array
     {
         $guruId = auth()->id();
 
-        $kelasList = Kelas::where('guru_id', $guruId)
+        $query = Kelas::where('guru_id', $guruId)
             ->withCount(['siswa', 'chapters'])
-            ->latest()
-            ->get();
+            ->latest();
 
-        $totalKelas = $kelasList->count();
-        $totalSiswa = Enrollment::whereIn('class_id', $kelasList->pluck('id'))->distinct('user_id')->count('user_id');
-        $totalMateri = Material::whereHas('chapter', function ($q) use ($kelasList) {
-            $q->whereIn('class_id', $kelasList->pluck('id'));
+        if (!empty($this->search)) {
+            $term = '%' . trim($this->search) . '%';
+            $query->where(function ($q) use ($term) {
+                $q->where('nama', 'like', $term)
+                  ->orWhere('mapel', 'like', $term)
+                  ->orWhere('kode_kelas', 'like', $term);
+            });
+        }
+
+        $kelasList = $query->get();
+
+        $allGuruClasses = Kelas::where('guru_id', $guruId)->get(['id']);
+        $totalKelas = $allGuruClasses->count();
+        $totalSiswa = Enrollment::whereIn('class_id', $allGuruClasses->pluck('id'))->distinct('user_id')->count('user_id');
+        $totalMateri = Material::whereHas('chapter', function ($q) use ($allGuruClasses) {
+            $q->whereIn('class_id', $allGuruClasses->pluck('id'));
         })->count();
 
         // Greeting waktu yang sopan dan profesional
@@ -117,20 +135,31 @@ new class extends Component {
         <!-- DAFTAR KELAS (Desain Rapi & Elegan)                         -->
         <!-- ============================================================ -->
         <div class="space-y-4">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <h2 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">Daftar Kelas</h2>
                     <p class="text-xs text-slate-500">Pilih kelas untuk mengelola materi, tugas, dan penilaian siswa</p>
                 </div>
-                @if(!$kelasList->isEmpty())
-                    <a href="{{ route('guru.kelas.index') }}" wire:navigate 
-                       class="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
-                        <span>Lihat Semua</span>
-                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+
+                <!-- Input Pencarian Kelas (Sesuai Gambar) -->
+                <div class="relative w-full sm:w-64">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                    </a>
-                @endif
+                    </span>
+                    <input type="text" 
+                           wire:model.live.debounce.250ms="search" 
+                           placeholder="Cari kelas..." 
+                           class="w-full pl-9 pr-8 py-2 text-xs rounded-full border border-slate-200 bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-slate-800 placeholder-slate-400 shadow-2xs">
+                    @if(!empty($search))
+                        <button wire:click="resetSearch" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    @endif
+                </div>
             </div>
 
             @if($kelasList->isEmpty())
@@ -141,17 +170,29 @@ new class extends Component {
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                         </svg>
                     </div>
-                    <div class="space-y-1">
-                        <h3 class="text-base font-bold text-slate-800">Belum Ada Kelas yang Dibuat</h3>
-                        <p class="text-xs text-slate-500 max-w-sm mx-auto">Mulai dengan membuat ruang kelas pertama Anda untuk membagikan materi dan tugas kepada siswa.</p>
-                    </div>
-                    <a href="{{ route('guru.kelas.index') }}" wire:navigate 
-                       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span>Buat Kelas Pertama</span>
-                    </a>
+                    @if(!empty($search))
+                        <div class="space-y-1">
+                            <h3 class="text-base font-bold text-slate-800">Tidak ada kelas yang cocok</h3>
+                            <p class="text-xs text-slate-500 max-w-sm mx-auto">
+                                Tidak ditemukan kelas dengan kata kunci "<span class="font-semibold text-slate-700">{{ $search }}</span>".
+                            </p>
+                        </div>
+                        <button type="button" wire:click="resetSearch" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer">
+                            Reset Pencarian
+                        </button>
+                    @else
+                        <div class="space-y-1">
+                            <h3 class="text-base font-bold text-slate-800">Belum Ada Kelas yang Dibuat</h3>
+                            <p class="text-xs text-slate-500 max-w-sm mx-auto">Mulai dengan membuat ruang kelas pertama Anda untuk membagikan materi dan tugas kepada siswa.</p>
+                        </div>
+                        <a href="{{ route('guru.kelas.index') }}" wire:navigate 
+                           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            <span>Buat Kelas Pertama</span>
+                        </a>
+                    @endif
                 </div>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">

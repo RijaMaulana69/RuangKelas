@@ -9,7 +9,7 @@
             </div>
             <div>
                 <h2 class="font-bold text-lg sm:text-xl text-slate-900 leading-tight">
-                    Ruang Belajar Siswa
+                    Dashboard Siswa
                 </h2>
             </div>
         </div>
