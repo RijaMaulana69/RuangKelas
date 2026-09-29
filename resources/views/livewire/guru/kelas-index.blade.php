@@ -84,6 +84,7 @@ new class extends Component {
         $kelas = Kelas::where('guru_id', auth()->id())->findOrFail($id);
         $kelas->delete();
         session()->flash('success', 'Kelas dan seluruh datanya telah berhasil dihapus.');
+        $this->dispatch('notify', message: 'Kelas berhasil dihapus');
     }
 
     public function with(): array
@@ -130,7 +131,25 @@ new class extends Component {
     }
 }; ?>
 
-<div class="py-6 sm:py-8 space-y-6">
+<div class="py-6 sm:py-8 space-y-6"
+     x-data="{
+         deleteModal: false,
+         deleteTitle: '',
+         deleteMessage: '',
+         deleteAction: null,
+         confirmDelete(title, message, callback) {
+             this.deleteTitle = title;
+             this.deleteMessage = message || 'Tindakan ini tidak dapat dibatalkan.';
+             this.deleteAction = callback;
+             this.deleteModal = true;
+         },
+         doDelete() {
+             if (this.deleteAction) {
+                 this.deleteAction();
+             }
+             this.deleteModal = false;
+         }
+     }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
         <!-- Flash Alert Notifikasi Ramah -->
@@ -227,75 +246,67 @@ new class extends Component {
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 @foreach($kelasList as $kelas)
-                    <div class="bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-indigo-300 transition-all duration-200 flex flex-col justify-between overflow-hidden group">
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between overflow-hidden group">
                         
                         <!-- Konten Utama Kartu Kelas -->
-                        <div class="p-6 space-y-4">
-                            <!-- Badge Jenjang & Tombol Salin Kode -->
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
-                                    {{ $kelas->jenjang }} &bull; {{ $kelas->mapel }}
-                                </span>
-
-                                <!-- Box Kode Akses Kelas yang Interaktif -->
-                                <div x-data="{ copied: false }" class="flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 px-2.5 py-1 rounded-xl transition shadow-2xs">
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Kode:</span>
-                                    <span class="text-xs font-mono font-black text-indigo-600 select-all">{{ $kelas->kode_kelas }}</span>
-                                    <button @click="navigator.clipboard.writeText('{{ $kelas->kode_kelas }}'); copied = true; setTimeout(() => copied = false, 2000)" 
-                                            class="text-slate-400 hover:text-indigo-600 p-0.5 transition" 
-                                            title="Salin Kode Kelas">
-                                        <svg x-show="!copied" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                        <span x-show="copied" class="text-[10px] text-emerald-600 font-black" style="display: none;">✓ Tersalin</span>
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="p-5 sm:p-6 space-y-3.5">
 
                             <!-- Judul & Deskripsi Kelas -->
-                            <div>
-                                <h3 class="font-bold text-slate-900 text-base sm:text-lg group-hover:text-indigo-600 transition-colors line-clamp-1">
+                            <div class="space-y-1">
+                                <a href="{{ route('guru.kelas.show', $kelas->id) }}" wire:navigate class="font-extrabold text-base sm:text-lg text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 block">
                                     {{ $kelas->nama }}
-                                </h3>
-                                <p class="text-xs text-slate-500 line-clamp-2 mt-1 min-h-[32px] leading-relaxed">
+                                </a>
+                                <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed min-h-[34px]">
                                     {{ $kelas->deskripsi ?: 'Belum ada deskripsi untuk kelas ini.' }}
                                 </p>
                             </div>
 
-                            <!-- Statistik Ringkas Guru -->
-                            <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 text-xs">
-                                <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-2">
-                                    <span class="text-base">👥</span>
-                                    <div>
-                                        <div class="text-[10px] text-slate-400 font-semibold uppercase">Siswa Terdaftar</div>
-                                        <div class="font-black text-slate-800 text-sm">{{ $kelas->siswa_count }} Siswa</div>
-                                    </div>
+                            <!-- Statistik Ringkas Guru (Bersih, Ramping, Tanpa Emoji Kasar) -->
+                            <div class="flex items-center gap-4 pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+                                <div class="flex items-center gap-1.5">
+                                    <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                                    </svg>
+                                    <span><b class="text-slate-800 font-bold">{{ $kelas->siswa_count }}</b> Siswa</span>
                                 </div>
-                                <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-2">
-                                    <span class="text-base">📚</span>
-                                    <div>
-                                        <div class="text-[10px] text-slate-400 font-semibold uppercase">Silabus Bab</div>
-                                        <div class="font-black text-slate-800 text-sm">{{ $kelas->chapters_count }} Bab</div>
-                                    </div>
+                                <span class="text-slate-300">&bull;</span>
+                                <div class="flex items-center gap-1.5">
+                                    <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                                    </svg>
+                                    <span><b class="text-slate-800 font-bold">{{ $kelas->chapters_count }}</b> Bab</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Footer Aksi Guru (Sangat Mudah Dipahami) -->
-                        <div class="px-6 py-3.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2">
-                                <button wire:click="openEditModal({{ $kelas->id }})" class="text-xs font-bold text-slate-500 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition" title="Ubah Nama/Mapel">
-                                    ✏️ Edit
+                        <!-- Footer Aksi Guru (Sederhana & Profesional, Ikon Halus) -->
+                        <div class="px-5 sm:px-6 py-3 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-1">
+                                <button type="button" wire:click="openEditModal({{ $kelas->id }})" 
+                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition cursor-pointer" 
+                                        title="Ubah Kelas">
+                                    <svg class="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                    </svg>
+                                    <span>Edit</span>
                                 </button>
-                                <span class="text-slate-300">&bull;</span>
-                                <button wire:confirm="Apakah Anda yakin ingin menghapus kelas '{{ $kelas->nama }}' beserta seluruh materi dan tugas di dalamnya?" wire:click="hapus({{ $kelas->id }})" class="text-xs font-bold text-rose-500 hover:text-rose-700 p-1.5 rounded-lg hover:bg-rose-50 transition" title="Hapus Kelas">
-                                    🗑️ Hapus
+                                <span class="text-slate-200">&bull;</span>
+                                <button type="button" @click="confirmDelete('Hapus Kelas {{ $kelas->nama }}?', 'Seluruh bab materi, tugas, kuis, dan data siswa di dalam kelas ini akan dihapus permanen.', () => $wire.hapus({{ $kelas->id }}))" 
+                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-600 hover:text-rose-700 hover:bg-rose-50 transition cursor-pointer" 
+                                        title="Hapus Kelas">
+                                    <svg class="h-3.5 w-3.5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                    </svg>
+                                    <span>Hapus</span>
                                 </button>
                             </div>
 
-                            <a href="{{ route('guru.kelas.show', $kelas->id) }}" wire:navigate class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition group-hover:translate-x-0.5">
+                            <a href="{{ route('guru.kelas.show', $kelas->id) }}" wire:navigate 
+                               class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs shadow-xs transition group-hover:shadow-sm">
                                 <span>Kelola Kelas</span>
-                                <span>&rarr;</span>
+                                <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
                             </a>
                         </div>
 
@@ -374,5 +385,56 @@ new class extends Component {
             </div>
         @endif
 
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODAL KONFIRMASI HAPUS (CLEAN, SEDERHANA & PROFESIONAL)      -->
+    <!-- ============================================================ -->
+    <div x-show="deleteModal" 
+         x-cloak
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs"
+         style="display: none;">
+        
+        <div @click.away="deleteModal = false"
+             x-show="deleteModal"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+             x-transition:leave-end="opacity-0 scale-95 translate-y-2"
+             class="w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 text-center space-y-4">
+            
+            <!-- Ikon Hapus Lembut -->
+            <div class="h-12 w-12 mx-auto rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </div>
+
+            <!-- Teks Konfirmasi -->
+            <div class="space-y-1">
+                <h4 class="font-extrabold text-base text-slate-900" x-text="deleteTitle"></h4>
+                <p class="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto" x-text="deleteMessage"></p>
+            </div>
+
+            <!-- Tombol Batal & Hapus -->
+            <div class="flex items-center gap-2.5 pt-2">
+                <button type="button" @click="deleteModal = false"
+                        class="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 hover:bg-slate-50 active:scale-95 text-slate-700 text-xs font-bold transition cursor-pointer">
+                    Batal
+                </button>
+                <button type="button" @click="doDelete()"
+                        class="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-bold shadow-xs transition cursor-pointer">
+                    Hapus
+                </button>
+            </div>
+        </div>
     </div>
 </div>

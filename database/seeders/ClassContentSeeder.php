@@ -37,19 +37,6 @@ class ClassContentSeeder extends Seeder
             ]
         );
 
-        // Kelas kedua: IPA Biologi
-        $kelasBio = Kelas::firstOrCreate(
-            ['kode_kelas' => 'BIO10B'],
-            [
-                'guru_id' => $guru->id,
-                'nama' => 'Biologi Sel & Jaringan',
-                'mapel' => 'Biologi',
-                'jenjang' => 'Kelas 10',
-                'deskripsi' => 'Pengenalan struktur sel eukariotik, prokariotik, dan jaringan tumbuhan serta hewan.',
-                'aktif' => true,
-            ]
-        );
-
         // 2. Daftarkan siswa demo ke kelas MTK10A
         Enrollment::firstOrCreate([
             'user_id' => $siswa->id,

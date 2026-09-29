@@ -201,5 +201,59 @@
                 <span class="text-[10px] tracking-tight">Profil</span>
             </a>
         </nav>
+
+        <!-- Global Toast Notifikasi Kecil di Tengah Atas -->
+        <div x-data="{ show: false, message: 'Kode berhasil disalin' }"
+             @notify.window="message = ($event.detail && $event.detail.message) ? $event.detail.message : ($event.detail || 'Kode berhasil disalin'); show = true; setTimeout(() => show = false, 2200)"
+             x-show="show"
+             x-cloak
+             x-transition:enter="transition ease-out duration-250"
+             x-transition:enter-start="opacity-0 -translate-y-3 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+             x-transition:leave-end="opacity-0 -translate-y-3 scale-95"
+             class="fixed top-5 left-1/2 -translate-x-1/2 z-[99999] pointer-events-none"
+             style="display: none;">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-900/95 text-white text-xs font-semibold rounded-full shadow-2xl backdrop-blur-md border border-slate-700/60">
+                <svg class="h-3.5 w-3.5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                </svg>
+                <span x-text="message"></span>
+            </div>
+        </div>
+
+        <script>
+            window.copyToClipboard = function(text, notifMessage = 'Kode kelas berhasil disalin') {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).then(function() {
+                        window.dispatchEvent(new CustomEvent('notify', { detail: { message: notifMessage } }));
+                    }).catch(function() {
+                        fallbackCopy(text, notifMessage);
+                    });
+                } else {
+                    fallbackCopy(text, notifMessage);
+                }
+            };
+
+            function fallbackCopy(text, notifMessage) {
+                var textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                textArea.setAttribute("readonly", "");
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                }
+                textArea.remove();
+                window.dispatchEvent(new CustomEvent('notify', { detail: { message: notifMessage } }));
+            }
+        </script>
     </body>
 </html>
