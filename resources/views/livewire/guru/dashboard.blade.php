@@ -120,7 +120,7 @@ new class extends Component {
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">Daftar Kelas</h2>
-                    <p class="text-xs text-slate-500">Pilih kelas untuk mengelola materi, tugas, dan rekapitulasi nilai</p>
+                    <p class="text-xs text-slate-500">Pilih kelas untuk mengelola materi, tugas, dan penilaian siswa</p>
                 </div>
                 @if(!$kelasList->isEmpty())
                     <a href="{{ route('guru.kelas.index') }}" wire:navigate 

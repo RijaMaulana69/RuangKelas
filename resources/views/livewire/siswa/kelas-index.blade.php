@@ -9,6 +9,22 @@ use Livewire\Attributes\Validate;
 new class extends Component {
     #[Validate('required|string|min:4|max:10')]
     public string $kodeKelas = '';
+    public string $search = '';
+    public bool $showGabungModal = false;
+
+    public function openGabungModal(): void
+    {
+        $this->reset('kodeKelas');
+        $this->resetErrorBag();
+        $this->showGabungModal = true;
+    }
+
+    public function closeGabungModal(): void
+    {
+        $this->showGabungModal = false;
+        $this->reset('kodeKelas');
+        $this->resetErrorBag();
+    }
 
     public function gabung(): void
     {
@@ -42,6 +58,7 @@ new class extends Component {
             'tanggal_gabung' => now(),
         ]);
 
+        $this->showGabungModal = false;
         $this->reset('kodeKelas');
         session()->flash('success', 'Berhasil bergabung ke kelas ' . $kelas->nama);
         $this->dispatch('notify', message: 'Berhasil bergabung ke kelas ' . $kelas->nama, type: 'success');
@@ -62,12 +79,25 @@ new class extends Component {
     {
         $userId = auth()->id();
 
-        $kelasList = Kelas::whereHas('enrollments', function ($q) use ($userId) {
+        $query = Kelas::whereHas('enrollments', function ($q) use ($userId) {
             $q->where('user_id', $userId);
         })
+        ->when($this->search, function ($query) {
+            $term = '%' . trim($this->search) . '%';
+            $query->where(function ($sub) use ($term) {
+                $sub->where('nama', 'like', $term)
+                    ->orWhere('deskripsi', 'like', $term)
+                    ->orWhere('mapel', 'like', $term)
+                    ->orWhere('kode_kelas', 'like', $term)
+                    ->orWhereHas('guru', function ($g) use ($term) {
+                        $g->where('name', 'like', $term);
+                    });
+            });
+        })
         ->with(['guru', 'chapters.materials'])
-        ->latest()
-        ->get()
+        ->latest();
+
+        $kelasList = $query->get()
         ->map(function ($kelas) use ($userId) {
             $allMaterials = $kelas->chapters->flatMap->materials;
             $totalMateri = $allMaterials->count();
@@ -118,94 +148,113 @@ new class extends Component {
                 </div>
                 <button @click="show = false" class="text-emerald-600 hover:text-emerald-800 text-lg font-bold leading-none">&times;</button>
             </div>
-        @endif
-
+        @endif        <!-- ============================================================ -->
+        <!-- BANNER HEADER (Selaras dengan Tampilan Guru)                 -->
         <!-- ============================================================ -->
-        <!-- BANNER & FORM GABUNG KELAS (Bersih, Rapi & Elegan)            -->
-        <!-- ============================================================ -->
-        <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div class="space-y-1 max-w-xl">
-                <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                    Kelas Pembelajaran
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-1.5 max-w-2xl">
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                    Daftar Mata Pelajaran
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
-                    Daftar ruang kelas aktif yang kamu ikuti. Masukkan kode kelas dari guru untuk mulai mengikuti materi pelajaran baru.
+                    Akses proses pembelajaran secara praktis dan terstruktur. Buka materi pelajaran, selesaikan tugas latihan dan kuis, serta pantau capaian hasil belajarmu dalam satu tempat.
                 </p>
             </div>
 
-            <!-- Form Gabung Kelas -->
-            <form wire:submit="gabung" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
-                <div class="relative">
-                    <input type="text" 
-                           wire:model="kodeKelas" 
-                           placeholder="KODE KELAS (MIS: MTK10A)" 
-                           class="w-full sm:w-56 px-3.5 py-2 text-xs font-mono font-bold tracking-wider uppercase rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 text-slate-800 transition" 
-                           required>
-                    @error('kodeKelas')
-                        <span class="text-[11px] font-semibold text-rose-500 block sm:absolute sm:-bottom-5 sm:left-0 mt-1 sm:mt-0">{{ $message }}</span>
-                    @enderror
-                </div>
-                <button type="submit" 
-                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs shadow-xs transition active:scale-95 cursor-pointer shrink-0">
+            <!-- Tombol Gabung Kelas Baru (Persis seperti Buat Kelas Baru di Guru) -->
+            <div class="shrink-0 flex items-center gap-3">
+                <button wire:click="openGabungModal" type="button" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs sm:text-sm shadow-sm shadow-indigo-600/20 transition active:scale-95 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
                     <span>Gabung Kelas</span>
                 </button>
-            </form>
+            </div>
         </div>
 
         <!-- ============================================================ -->
-        <!-- DAFTAR KELAS SISWA (Desain Ramping & Profesional)            -->
+        <!-- PENCARIAN KELAS (Bersih & Elegan)                            -->
+        <!-- ============================================================ -->
+        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-2xs">
+            <div class="relative w-full max-w-md">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </span>
+                <input type="text" 
+                       wire:model.live.debounce.300ms="search" 
+                       placeholder="Cari nama kelas, mapel, atau guru..." 
+                       class="w-full pl-9 pr-9 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 text-slate-800 transition">
+                @if($search)
+                    <button type="button" 
+                            wire:click="$set('search', '')" 
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition cursor-pointer">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                @endif
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- DAFTAR KELAS SISWA (Desain Selaras dengan Guru)              -->
         <!-- ============================================================ -->
         @if($kelasList->isEmpty())
-            <!-- Empty State Bersih -->
-            <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 p-8 sm:p-12 text-center space-y-4 shadow-2xs">
-                <div class="h-14 w-14 mx-auto rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center">
-                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                    </svg>
+            <div class="bg-white rounded-3xl border border-slate-200/80 p-12 text-center space-y-4 shadow-xs">
+                <div class="h-16 w-16 mx-auto rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-3xl shadow-inner">
+                    🏫
                 </div>
-                <div class="space-y-1">
-                    <h3 class="text-base font-bold text-slate-800">Kamu Belum Mengikuti Kelas</h3>
-                    <p class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-                        Mintalah kode kelas kepada guru pengajar, lalu masukkan pada formulir di atas untuk mulai belajar.
-                    </p>
-                </div>
+                @if(!empty($search))
+                    <div class="space-y-1">
+                        <h3 class="text-base font-bold text-slate-800">Tidak ada kelas yang sesuai pencarian</h3>
+                        <p class="text-xs text-slate-400 max-w-sm mx-auto">Silakan bersihkan pencarian untuk melihat semua kelas yang kamu ikuti.</p>
+                    </div>
+                    <button wire:click="$set('search', '')" class="text-xs font-bold text-indigo-600 hover:underline cursor-pointer">
+                        Reset Pencarian
+                    </button>
+                @else
+                    <div class="space-y-1">
+                        <h3 class="text-base font-bold text-slate-800">Kamu Belum Mengikuti Kelas</h3>
+                        <p class="text-xs text-slate-400 max-w-sm mx-auto">Mintalah kode kelas kepada guru pengajar, lalu klik tombol Gabung Kelas untuk mulai belajar.</p>
+                    </div>
+                    <button wire:click="openGabungModal" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span>Gabung Kelas Sekarang</span>
+                    </button>
+                @endif
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 @foreach($kelasList as $kelas)
                     <div class="bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between overflow-hidden group">
                         
                         <!-- Konten Utama Kartu Kelas -->
-                        <div class="p-5 space-y-3.5">
-                            <!-- Info Guru Pengajar -->
-                            <div class="flex items-center justify-between text-xs text-slate-500">
-                                <span class="flex items-center gap-1.5 font-medium truncate">
-                                    <svg class="h-3.5 w-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                    </svg>
-                                    <span class="truncate">{{ $kelas->guru->name ?? 'Guru Pengajar' }}</span>
-                                </span>
-                                <span class="font-mono text-[11px] font-bold text-slate-400 uppercase shrink-0">{{ $kelas->mapel }}</span>
-                            </div>
+                        <div class="p-5 sm:p-6 space-y-3.5">
 
-                            <!-- Judul & Deskripsi Kelas -->
+                            <!-- Judul & Deskripsi Kelas (Posisinya di atas, selaras dengan guru) -->
                             <div class="space-y-1">
-                                <a href="{{ route('siswa.kelas.show', $kelas->id) }}" wire:navigate class="font-extrabold text-base text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 block">
+                                <a href="{{ route('siswa.kelas.show', $kelas->id) }}" wire:navigate class="font-extrabold text-base sm:text-lg text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 block">
                                     {{ $kelas->nama }}
                                 </a>
                                 <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed min-h-[34px]">
-                                    {{ $kelas->deskripsi ?: 'Tidak ada deskripsi untuk kelas ini.' }}
+                                    {{ $kelas->deskripsi ?: 'Belum ada deskripsi untuk kelas ini.' }}
                                 </p>
                             </div>
 
-                            <!-- Indikator Progres Belajar Siswa -->
-                            <div class="space-y-1.5 pt-3 border-t border-slate-100">
-                                <div class="flex items-center justify-between text-xs">
-                                    <span class="text-slate-500 font-medium">Progres Materi</span>
-                                    <span class="font-bold text-slate-800">{{ $kelas->progres_persen }}%</span>
+                            <!-- Info Guru Pengajar & Progres Belajar Siswa (Informasi utuh terjaga) -->
+                            <div class="space-y-2 pt-3 border-t border-slate-100">
+                                <div class="flex items-center justify-between text-xs text-slate-500 font-medium">
+                                    <span class="flex items-center gap-1.5 truncate">
+                                        <svg class="h-3.5 w-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                        </svg>
+                                        <span class="truncate">{{ $kelas->guru->name ?? 'Guru Pengajar' }}</span>
+                                    </span>
+                                    <span class="font-bold text-slate-800 shrink-0">{{ $kelas->progres_persen }}%</span>
                                 </div>
                                 <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                                     <div class="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style="width: {{ $kelas->progres_persen }}%"></div>
@@ -216,18 +265,25 @@ new class extends Component {
                             </div>
                         </div>
 
-                        <!-- Footer Aksi Kartu -->
-                        <div class="px-5 py-3 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between">
-                            <button type="button" 
-                                    @click="confirmKeluar({{ $kelas->id }}, '{{ addslashes($kelas->nama) }}')" 
-                                    class="text-xs font-semibold text-slate-400 hover:text-rose-600 transition cursor-pointer">
-                                Keluar
-                            </button>
+                        <!-- Footer Aksi Siswa (Selaras dengan Footer Guru) -->
+                        <div class="px-5 sm:px-6 py-3 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-1">
+                                <button type="button" 
+                                        @click="confirmKeluar({{ $kelas->id }}, '{{ addslashes($kelas->nama) }}')" 
+                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                                        title="Keluar dari Kelas">
+                                    <svg class="h-3.5 w-3.5 text-slate-400 group-hover:text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                    </svg>
+                                    <span>Keluar</span>
+                                </button>
+                            </div>
+
                             <a href="{{ route('siswa.kelas.show', $kelas->id) }}" wire:navigate 
-                               class="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800 group-hover:gap-1.5 transition-all">
+                               class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs shadow-xs transition group-hover:shadow-sm">
                                 <span>Buka Kelas</span>
-                                <svg class="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                 </svg>
                             </a>
                         </div>
@@ -302,4 +358,64 @@ new class extends Component {
             </div>
         </div>
     </div>
+
+    <!-- ============================================================ -->
+    <!-- MODAL GABUNG KELAS BARU (Elegan, Sederhana & Ramah)          -->
+    <!-- ============================================================ -->
+    @if($showGabungModal)
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+                
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                    <div>
+                        <h3 class="text-base font-black text-slate-900">
+                            Gabung Ruang Kelas
+                        </h3>
+                        <p class="text-xs text-slate-500">Masukkan kode kelas yang diberikan oleh gurumu</p>
+                    </div>
+                    <button type="button" 
+                            wire:click="closeGabungModal" 
+                            class="h-8 w-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center text-xl font-bold leading-none transition cursor-pointer">
+                        &times;
+                    </button>
+                </div>
+
+                <!-- Form Masukkan Kode -->
+                <form wire:submit="gabung" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                            Kode Kelas
+                        </label>
+                        <div class="relative">
+                            <input type="text" 
+                                   wire:model="kodeKelas" 
+                                   placeholder="MISAL: BIN9A" 
+                                   autofocus
+                                   class="w-full px-4 py-2.5 text-sm font-mono font-bold tracking-widest uppercase rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 text-slate-800 transition" 
+                                   required>
+                        </div>
+                        @error('kodeKelas')
+                            <p class="text-xs font-semibold text-rose-500 mt-1.5">{{ $message }}</p>
+                        @enderror
+                        <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                            Minta kode kelas kepada guru pengajarmu, lalu masukkan kode di atas untuk mulai mengikuti materi dan tugas.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+                        <button type="button" 
+                                wire:click="closeGabungModal" 
+                                class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                            Batal
+                        </button>
+                        <button type="submit" 
+                                class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs shadow-sm shadow-indigo-600/20 transition active:scale-95 cursor-pointer">
+                            <span>Gabung Sekarang</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 </div>

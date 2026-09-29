@@ -185,13 +185,41 @@ new class extends Component {
         $avgAssignment = $gradedAssignments->count() > 0 ? round($gradedAssignments->avg('nilai'), 1) : null;
 
         $myQuizScores = [];
+        $totalKuisLulus = 0;
         foreach ($kelas->chapters->flatMap->quizzes as $quiz) {
             $quizBest = $attempts->get($quiz->id)?->sortByDesc('skor')->first();
             if ($quizBest) {
                 $myQuizScores[] = $quizBest->skor;
+                if ($quizBest->skor >= $quiz->kkm) {
+                    $totalKuisLulus++;
+                }
             }
         }
         $avgQuiz = count($myQuizScores) > 0 ? round(array_sum($myQuizScores) / count($myQuizScores), 1) : null;
+
+        // Nilai Akhir Kumulatif & Predikat
+        $validScores = [];
+        if ($avgAssignment !== null) $validScores[] = $avgAssignment;
+        if ($avgQuiz !== null) $validScores[] = $avgQuiz;
+        $nilaiAkhir = count($validScores) > 0 ? round(array_sum($validScores) / count($validScores), 1) : null;
+
+        $predikat = '-';
+        $predikatStatus = 'Belum Ada Penilaian';
+        if ($nilaiAkhir !== null) {
+            if ($nilaiAkhir >= 90) {
+                $predikat = 'A';
+                $predikatStatus = 'Sangat Memuaskan';
+            } elseif ($nilaiAkhir >= 80) {
+                $predikat = 'B';
+                $predikatStatus = 'Baik';
+            } elseif ($nilaiAkhir >= 70) {
+                $predikat = 'C';
+                $predikatStatus = 'Cukup (Tuntas)';
+            } else {
+                $predikat = 'D';
+                $predikatStatus = 'Perlu Peningkatan';
+            }
+        }
 
         return [
             'kelas' => $kelas,
@@ -204,6 +232,11 @@ new class extends Component {
             'mySubmissions' => $mySubmissions,
             'avgAssignment' => $avgAssignment,
             'avgQuiz' => $avgQuiz,
+            'nilaiAkhir' => $nilaiAkhir,
+            'predikat' => $predikat,
+            'predikatStatus' => $predikatStatus,
+            'totalKuisLulus' => $totalKuisLulus,
+            'totalTugasDinilai' => $gradedAssignments->count(),
         ];
     }
 }; ?>
@@ -223,92 +256,70 @@ new class extends Component {
         @endif
 
         <!-- ============================================================ -->
-        <!-- HEADER & TOMBOL KEMBALI (Profesional & Singkron)              -->
+        <!-- HEADER KELAS & NAVIGASI TERPADU (Selaras dengan Tampilan Guru)-->
         <!-- ============================================================ -->
-        <div class="flex items-center justify-between gap-4">
-            <a href="{{ route('siswa.kelas.index') }}" wire:navigate 
-               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/80 text-xs font-bold text-slate-700 hover:text-indigo-600 transition shadow-2xs group cursor-pointer shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5 text-slate-500 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                </svg>
-                <span>Kembali</span>
-            </a>
-            <span class="text-xs font-mono font-medium text-slate-400">
-                Mata Pelajaran: <span class="font-bold text-slate-700">{{ $kelas->mapel }}</span>
-            </span>
-        </div>
+        <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
+            <!-- Info Kelas & Aksi Utama -->
+            <div class="p-5 sm:p-6 pb-4 sm:pb-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="space-y-1.5 min-w-0">
+                        <div>
+                            <a href="{{ route('siswa.kelas.index') }}" wire:navigate class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-700 hover:text-slate-900 text-xs font-bold shadow-xs transition group">
+                                <svg class="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-700 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                                </svg>
+                                <span>Kembali</span>
+                            </a>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">
+                            {{ $kelas->nama }}
+                        </h1>
+                        @if($kelas->deskripsi)
+                            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-2xl line-clamp-2">
+                                {{ $kelas->deskripsi }}
+                            </p>
+                        @endif
+                        <div class="flex flex-wrap items-center gap-2.5 pt-1 text-xs text-slate-500 font-medium">
+                            <span>Pengajar: <b class="text-slate-700">{{ $kelas->guru->name ?? 'Guru Pengajar' }}</b></span>
+                            <span class="text-slate-300">&bull;</span>
+                            <span class="font-bold text-slate-700">{{ $kelas->chapters->count() }} Bab</span>
+                            <span class="text-slate-300">&bull;</span>
+                            <span class="font-bold text-slate-700">{{ $allAssignments->count() }} Tugas</span>
+                            <span class="text-slate-300">&bull;</span>
+                            <span class="font-bold text-slate-700">{{ $kelas->chapters->flatMap->quizzes->count() }} Kuis</span>
+                        </div>
+                    </div>
 
-        <!-- ============================================================ -->
-        <!-- INFORMASI KELAS & PROGRES BELAJAR (Sederhana & Ringkas)       -->
-        <!-- ============================================================ -->
-        <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-2xs">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
-                <!-- Info Kelas Kiri -->
-                <div class="space-y-1.5 max-w-xl">
-                    <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                        {{ $kelas->nama }}
-                    </h1>
-                    <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                        {{ $kelas->deskripsi ?: 'Pelajari bab materi pembelajaran, kumpulkan tugas latihan, dan ikuti kuis evaluasi.' }}
-                    </p>
-                    <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500 pt-1 font-medium">
-                        <span>Pengajar: <b class="text-slate-700">{{ $kelas->guru->name ?? 'Guru Pengajar' }}</b></span>
-                        <span class="text-slate-300">&bull;</span>
-                        <span><b class="text-slate-700">{{ $kelas->chapters->count() }}</b> Bab</span>
-                        <span class="text-slate-300">&bull;</span>
-                        <span><b class="text-slate-700">{{ $allAssignments->count() }}</b> Tugas</span>
-                        <span class="text-slate-300">&bull;</span>
-                        <span><b class="text-slate-700">{{ $kelas->chapters->flatMap->quizzes->count() }}</b> Kuis</span>
-                    </div>
-                </div>
-
-                <!-- Progres Belajar Ringkas Kanan -->
-                <div class="md:w-64 shrink-0 bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5 space-y-2">
-                    <div class="flex items-center justify-between text-xs">
-                        <span class="text-slate-600 font-semibold">Progres Belajar</span>
-                        <span class="font-black text-indigo-600">{{ $progresPersen }}%</span>
-                    </div>
-                    <div class="w-full bg-slate-200/80 rounded-full h-1.5 overflow-hidden">
-                        <div class="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style="width: {{ $progresPersen }}%"></div>
-                    </div>
-                    <div class="flex items-center justify-between text-[11px] text-slate-400 font-medium">
-                        <span>{{ $completedCount }}/{{ $allMaterialsCount }} materi</span>
-                        <span>{{ $mySubmissions->count() }}/{{ $allAssignments->count() }} tugas</span>
+                    <!-- Box Kode Kelas Minimalis -->
+                    <div class="shrink-0 self-start sm:self-center" x-data="{ copied: false }">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Kode:</span>
+                            <span class="font-mono font-bold text-indigo-700 select-all cursor-pointer"
+                                  @click="window.copyToClipboard('{{ $kelas->kode_kelas }}', 'Kode kelas berhasil disalin'); copied = true; setTimeout(() => copied = false, 2000)"
+                                  title="Klik untuk salin">{{ $kelas->kode_kelas }}</span>
+                            <button @click="window.copyToClipboard('{{ $kelas->kode_kelas }}', 'Kode kelas berhasil disalin'); copied = true; setTimeout(() => copied = false, 2000)"
+                                    class="p-1 text-slate-400 hover:text-indigo-600 rounded-md hover:bg-white transition cursor-pointer" title="Salin Kode Kelas">
+                                <svg x-show="!copied" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                <svg x-show="copied" class="h-3.5 w-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="display:none;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- ============================================================ -->
-        <!-- TAB NAVIGASI (Singkron & Bersih)                             -->
-        <!-- ============================================================ -->
-        <div class="flex items-center gap-2 border-b border-slate-200">
-            <button wire:click="$set('activeTab', 'silabus')" 
-                    class="pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition flex items-center gap-2 cursor-pointer {{ $activeTab === 'silabus' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                </svg>
-                <span>Silabus & Materi</span>
-            </button>
-            <button wire:click="$set('activeTab', 'tugas')" 
-                    class="pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition flex items-center gap-2 cursor-pointer {{ $activeTab === 'tugas' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span>Tugas Latihan</span>
-                @if($allAssignments->count() > 0)
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $mySubmissions->count() === $allAssignments->count() ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' }}">
-                        {{ $mySubmissions->count() }}/{{ $allAssignments->count() }}
-                    </span>
-                @endif
-            </button>
-            <button wire:click="$set('activeTab', 'nilai')" 
-                    class="pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition flex items-center gap-2 cursor-pointer {{ $activeTab === 'nilai' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-                </svg>
-                <span>Buku Nilai</span>
-            </button>
+            <!-- Tab Navigasi Terintegrasi -->
+            <div class="px-6 border-t border-slate-100 bg-slate-50/60 flex items-center justify-between gap-3">
+                <nav class="flex items-center gap-1 sm:gap-2 -mb-px">
+                    <button wire:click="$set('activeTab', 'silabus')" 
+                            class="py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'silabus' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                        Materi Belajar
+                    </button>
+                    <button wire:click="$set('activeTab', 'nilai')" 
+                            class="py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'nilai' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                        Nilai Saya
+                    </button>
+                </nav>
+            </div>
         </div>
 
         <!-- ============================================================ -->
@@ -452,15 +463,11 @@ new class extends Component {
                                             <!-- Kanan: Status Nilai + Tombol -->
                                             <div class="flex items-center justify-between sm:justify-end gap-2.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                                                 @if($sub)
-                                                    @if($sub->status === 'graded')
-                                                        <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-lg">
-                                                            Nilai: {{ $sub->nilai }}/100
-                                                        </span>
-                                                    @elseif($sub->status === 'late')
+                                                    @if($sub->status === 'late')
                                                         <span class="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-lg">
                                                             Terlambat
                                                         </span>
-                                                    @else
+                                                    @elseif($sub->status === 'submitted')
                                                         <span class="text-[11px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-lg">
                                                             Terkumpul
                                                         </span>
@@ -509,14 +516,8 @@ new class extends Component {
                                                 </div>
                                             </div>
 
-                                            <!-- Kanan: Status Skor + Tombol -->
+                                            <!-- Kanan: Tombol Aksi Kuis -->
                                             <div class="flex items-center justify-between sm:justify-end gap-2.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                                                @if($attempt)
-                                                    <span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border {{ $isPassed ? 'text-emerald-700 bg-emerald-50 border-emerald-100' : 'text-amber-700 bg-amber-50 border-amber-100' }}">
-                                                        Skor: {{ $attempt->skor }} &bull; {{ $isPassed ? 'Lulus' : 'Remedial' }}
-                                                    </span>
-                                                @endif
-
                                                 <a href="{{ route('siswa.kuis.show', $quiz->id) }}" wire:navigate 
                                                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition {{ $attempt ? 'bg-slate-100 hover:bg-slate-200 text-slate-700' : 'bg-purple-600 hover:bg-purple-700 text-white shadow-xs' }}">
                                                     <span>{{ $attempt ? 'Ulangi Kuis' : 'Mulai Kuis' }}</span>
@@ -532,201 +533,123 @@ new class extends Component {
                 @endif
             </div>
         @endif
-
+        
         <!-- ============================================================ -->
-        <!-- TAB 2: DAFTAR TUGAS LATIHAN                                  -->
-        <!-- ============================================================ -->
-        @if($activeTab === 'tugas')
-            <div class="space-y-4">
-                @if($allAssignments->isEmpty())
-                    <div class="bg-white rounded-2xl border border-slate-200/80 p-12 text-center shadow-2xs space-y-3">
-                        <div class="h-12 w-12 mx-auto rounded-xl bg-slate-50 border border-slate-200/80 text-slate-400 flex items-center justify-center">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-sm">Tidak Ada Tugas Latihan</h3>
-                        <p class="text-xs text-slate-400 max-w-sm mx-auto">Guru belum memberikan tugas latihan untuk kelas ini.</p>
-                    </div>
-                @else
-                    <div class="grid grid-cols-1 gap-3.5">
-                        @foreach($allAssignments as $asg)
-                            @php
-                                $sub = $mySubmissions->get($asg->id);
-                            @endphp
-                            <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs hover:border-slate-300 transition">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                    <div class="space-y-2">
-                                        <div class="flex flex-wrap items-center gap-2 text-xs">
-                                            <span class="px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600 text-[11px]">
-                                                Bab: {{ $asg->chapter->judul ?? '-' }}
-                                            </span>
-                                            @if($sub)
-                                                @if($sub->status === 'graded')
-                                                    <span class="px-2 py-0.5 rounded-md font-black bg-emerald-50 text-emerald-700 border border-emerald-100 text-[11px]">
-                                                        Nilai: {{ $sub->nilai }}/100
-                                                    </span>
-                                                @elseif($sub->status === 'late')
-                                                    <span class="px-2 py-0.5 rounded-md font-bold bg-amber-50 text-amber-700 border border-amber-100 text-[11px]">
-                                                        Terkumpul (Terlambat)
-                                                    </span>
-                                                @else
-                                                    <span class="px-2 py-0.5 rounded-md font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px]">
-                                                        Sudah Dikumpulkan
-                                                    </span>
-                                                @endif
-                                            @else
-                                                <span class="px-2 py-0.5 rounded-md font-bold bg-amber-50 text-amber-700 border border-amber-100 text-[11px]">
-                                                    Belum Mengumpulkan
-                                                </span>
-                                            @endif
-                                        </div>
-
-                                        <h3 class="text-base font-bold text-slate-900">{{ $asg->judul }}</h3>
-
-                                        @if($asg->deskripsi)
-                                            <p class="text-xs text-slate-500 leading-relaxed max-w-2xl">{!! nl2br(e($asg->deskripsi)) !!}</p>
-                                        @endif
-
-                                        <!-- Lampiran Soal dari Guru jika ada -->
-                                        @if($asg->file_lampiran || $asg->url_referensi)
-                                            <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
-                                                <span class="text-slate-400 font-semibold text-[11px]">Lampiran Guru:</span>
-                                                @if($asg->file_lampiran)
-                                                    <a href="{{ asset('storage/' . $asg->file_lampiran) }}" target="_blank" download class="inline-flex items-center gap-1 font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2.5 py-1 rounded-lg">
-                                                        <span>Berkas Soal &darr;</span>
-                                                    </a>
-                                                @endif
-                                                @if($asg->url_referensi)
-                                                    <a href="{{ $asg->url_referensi }}" target="_blank" class="inline-flex items-center gap-1 font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg">
-                                                        <span>Tautan Referensi &nearr;</span>
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        @endif
-
-                                        <!-- Feedback dari Guru jika sudah dinilai -->
-                                        @if($sub && $sub->status === 'graded' && $sub->catatan_guru)
-                                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs space-y-0.5">
-                                                <div class="font-bold text-slate-800">Catatan Guru:</div>
-                                                <p class="text-slate-600 italic">"{{ $sub->catatan_guru }}"</p>
-                                            </div>
-                                        @endif
-                                    </div>
-
-                                    <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                                        <div class="text-right text-xs text-slate-400">
-                                            <div>Tenggat:</div>
-                                            <b class="text-slate-700">{{ $asg->deadline ? $asg->deadline->translatedFormat('d M Y, H:i') : 'Tanpa Batas' }}</b>
-                                        </div>
-
-                                        <button wire:click="openSubmitModal({{ $asg->id }})" 
-                                                class="px-4 py-2 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer {{ $sub ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-indigo-600 text-white hover:bg-indigo-700' }}">
-                                            {{ $sub ? ($sub->status === 'graded' ? 'Lihat Jawaban' : 'Perbarui Jawaban') : 'Kumpulkan Tugas' }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        @endif
-
-        <!-- ============================================================ -->
-        <!-- TAB 3: BUKU NILAI & RAPOR SAYA                              -->
+        <!-- TAB 2: BUKU NILAI & RAPOR SAYA                              -->
         <!-- ============================================================ -->
         @if($activeTab === 'nilai')
-            <div class="space-y-6">
-                <!-- Ringkasan Rata-rata Nilai -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
-                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs">
-                        <span class="text-xs font-semibold text-slate-500">Rata-rata Tugas</span>
-                        <div class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">
-                            {{ $avgAssignment !== null ? $avgAssignment : '-' }}
-                            @if($avgAssignment !== null)<span class="text-xs text-slate-400 font-normal">/100</span>@endif
+            <div class="space-y-4">
+                <!-- 1. Ringkasan Capaian Belajar Siswa (4 Metrik Kompak) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <!-- Nilai Akhir -->
+                    <div class="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/80 shadow-2xs space-y-1">
+                        <span class="text-[11px] font-medium text-slate-500 block">Nilai Akhir</span>
+                        <div class="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+                            {{ $nilaiAkhir !== null ? $nilaiAkhir : '-' }}<span class="text-xs text-slate-400 font-normal">/100</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Tugas yang sudah dinilai</p>
+                        <p class="text-[11px] text-slate-500 truncate">{{ $predikatStatus }}</p>
                     </div>
 
-                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs">
-                        <span class="text-xs font-semibold text-slate-500">Rata-rata Kuis</span>
-                        <div class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">
-                            {{ $avgQuiz !== null ? $avgQuiz : '-' }}
-                            @if($avgQuiz !== null)<span class="text-xs text-slate-400 font-normal">/100</span>@endif
+                    <!-- Rata-rata Tugas -->
+                    <div class="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/80 shadow-2xs space-y-1">
+                        <span class="text-[11px] font-medium text-slate-500 block">Rata-rata Tugas</span>
+                        <div class="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+                            {{ $avgAssignment !== null ? $avgAssignment : '-' }}<span class="text-xs text-slate-400 font-normal">/100</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Skor kuis terbaik</p>
+                        <p class="text-[11px] text-slate-500">{{ $totalTugasDinilai }}/{{ $allAssignments->count() }} tugas dinilai</p>
                     </div>
 
-                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-2xs">
-                        <span class="text-xs font-semibold text-slate-500">Materi Selesai</span>
-                        <div class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">
+                    <!-- Rata-rata Kuis -->
+                    <div class="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/80 shadow-2xs space-y-1">
+                        <span class="text-[11px] font-medium text-slate-500 block">Rata-rata Kuis</span>
+                        <div class="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+                            {{ $avgQuiz !== null ? $avgQuiz : '-' }}<span class="text-xs text-slate-400 font-normal">/100</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500">{{ $totalKuisLulus }}/{{ $kelas->chapters->flatMap->quizzes->count() }} kuis tuntas</p>
+                    </div>
+
+                    <!-- Progres Materi -->
+                    <div class="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/80 shadow-2xs space-y-1">
+                        <span class="text-[11px] font-medium text-slate-500 block">Kelengkapan Materi</span>
+                        <div class="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
                             {{ $progresPersen }}%
                         </div>
-                        <p class="text-[11px] text-slate-400 mt-0.5">{{ $completedCount }} dari {{ $allMaterialsCount }} materi</p>
+                        <p class="text-[11px] text-slate-500">{{ $completedCount }}/{{ $allMaterialsCount }} materi selesai</p>
                     </div>
                 </div>
 
-                <!-- Rekap Nilai Tugas -->
+                <!-- 2. Rekapitulasi Nilai Tugas -->
+                @php
+                    $submittedAssignments = $allAssignments->filter(fn($asg) => $mySubmissions->has($asg->id));
+                @endphp
                 <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-2xs">
-                    <div class="px-5 sm:px-6 py-4 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between">
-                        <h3 class="font-bold text-slate-900 text-sm">Rekapitulasi Nilai Tugas</h3>
-                        <span class="text-xs text-slate-400 font-medium">{{ $allAssignments->count() }} Tugas Total</span>
+                    <div class="px-4 sm:px-5 py-3 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-xs sm:text-sm">Nilai Tugas Latihan</h3>
+                        <span class="text-[11px] font-medium text-slate-500">
+                            {{ $totalTugasDinilai }} / {{ $allAssignments->count() }} Selesai Dinilai
+                        </span>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100">
+                            <thead class="bg-slate-50/40 text-slate-400 font-semibold border-b border-slate-100">
                                 <tr>
-                                    <th class="px-5 py-3">Nama Tugas & Bab</th>
-                                    <th class="px-5 py-3">Waktu Kumpul</th>
-                                    <th class="px-5 py-3">Status</th>
-                                    <th class="px-5 py-3">Nilai</th>
-                                    <th class="px-5 py-3">Catatan Guru</th>
+                                    <th class="px-4 sm:px-5 py-2.5">Tugas</th>
+                                    <th class="px-4 py-2.5">Status</th>
+                                    <th class="px-4 py-2.5 text-center">Nilai</th>
+                                    <th class="px-4 sm:px-5 py-2.5 text-right">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                @forelse($allAssignments as $asg)
+                                @forelse($submittedAssignments as $asg)
                                     @php
                                         $sub = $mySubmissions->get($asg->id);
                                     @endphp
                                     <tr class="hover:bg-slate-50/50 transition">
-                                        <td class="px-5 py-3.5">
+                                        <td class="px-4 sm:px-5 py-3">
                                             <div class="font-bold text-slate-800">{{ $asg->judul }}</div>
-                                            <div class="text-[11px] text-slate-400">{{ $asg->chapter->judul ?? '-' }}</div>
+                                            <div class="text-[11px] text-slate-400 mt-0.5">
+                                                {{ $asg->chapter->judul ?? '-' }}
+                                            </div>
                                         </td>
-                                        <td class="px-5 py-3.5 text-slate-600">
-                                            {{ $sub && $sub->submitted_at ? $sub->submitted_at->translatedFormat('d M Y H:i') : '-' }}
-                                        </td>
-                                        <td class="px-5 py-3.5">
-                                            @if($sub)
-                                                @if($sub->status === 'graded')
-                                                    <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">Sudah Dinilai</span>
-                                                @elseif($sub->status === 'late')
-                                                    <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-100">Terkumpul Terlambat</span>
-                                                @else
-                                                    <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">Menunggu Penilaian</span>
-                                                @endif
-                                            @else
-                                                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-600">Belum Kumpul</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-5 py-3.5 font-bold text-sm">
-                                            @if($sub && $sub->status === 'graded')
-                                                <span class="{{ $sub->nilai >= 75 ? 'text-emerald-600' : 'text-amber-600' }}">
-                                                    {{ $sub->nilai }}
+                                        <td class="px-4 py-3">
+                                            @if($sub->status === 'graded')
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                                    Sudah Dinilai
+                                                </span>
+                                            @elseif($sub->status === 'late')
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-100">
+                                                    Terlambat
                                                 </span>
                                             @else
-                                                <span class="text-slate-400 font-normal">-</span>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                                    Terkumpul
+                                                </span>
+                                            @endif
+                                            @if($sub->submitted_at)
+                                                <div class="text-[10px] text-slate-400 mt-0.5">{{ $sub->submitted_at->translatedFormat('d M Y, H:i') }}</div>
                                             @endif
                                         </td>
-                                        <td class="px-5 py-3.5 text-slate-600 max-w-xs truncate">
-                                            {{ $sub?->catatan_guru ?: '-' }}
+                                        <td class="px-4 py-3 text-center">
+                                            @if($sub->status === 'graded' && $sub->nilai !== null)
+                                                <div class="inline-flex items-baseline gap-0.5 font-bold">
+                                                    <span class="text-sm {{ $sub->nilai >= 70 ? 'text-emerald-700' : 'text-amber-700' }}">{{ $sub->nilai }}</span>
+                                                    <span class="text-[10px] text-slate-400">/100</span>
+                                                </div>
+                                            @else
+                                                <span class="text-slate-400 text-xs">Menunggu</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 sm:px-5 py-3 text-right">
+                                            <button wire:click="openSubmitModal({{ $asg->id }})" class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer">
+                                                <span>Lihat Tugas</span>
+                                                <span>&rarr;</span>
+                                            </button>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-5 py-8 text-center text-slate-400 italic">Belum ada tugas latihan di kelas ini.</td>
+                                        <td colspan="4" class="px-4 py-6 text-center text-slate-400 italic">Belum ada tugas yang dikerjakan. Kerjakan tugas pada tab Materi Belajar.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -734,65 +657,72 @@ new class extends Component {
                     </div>
                 </div>
 
-                <!-- Rekap Nilai Kuis -->
+                <!-- 3. Rekapitulasi Nilai Kuis -->
+                @php
+                    $attemptedQuizzes = $kelas->chapters->flatMap->quizzes->filter(function($quiz) use ($quizAttempts) {
+                        $attempts = $quizAttempts->get($quiz->id);
+                        return $attempts && $attempts->isNotEmpty();
+                    });
+                @endphp
                 <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-2xs">
-                    <div class="px-5 sm:px-6 py-4 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between">
-                        <h3 class="font-bold text-slate-900 text-sm">Rekapitulasi Nilai Kuis</h3>
-                        <span class="text-xs text-slate-400 font-medium">{{ $kelas->chapters->flatMap->quizzes->count() }} Kuis Total</span>
+                    <div class="px-4 sm:px-5 py-3 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 text-xs sm:text-sm">Nilai Kuis</h3>
+                        <span class="text-[11px] font-medium text-slate-500">
+                            {{ $totalKuisLulus }} / {{ $kelas->chapters->flatMap->quizzes->count() }} Kuis Lulus
+                        </span>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100">
+                            <thead class="bg-slate-50/40 text-slate-400 font-semibold border-b border-slate-100">
                                 <tr>
-                                    <th class="px-5 py-3">Nama Kuis & Bab</th>
-                                    <th class="px-5 py-3">KKM</th>
-                                    <th class="px-5 py-3">Skor Terbaik</th>
-                                    <th class="px-5 py-3">Status</th>
-                                    <th class="px-5 py-3 text-right">Aksi</th>
+                                    <th class="px-4 sm:px-5 py-2.5">Kuis</th>
+                                    <th class="px-4 py-2.5">Skor</th>
+                                    <th class="px-4 py-2.5 text-center">Status</th>
+                                    <th class="px-4 sm:px-5 py-2.5 text-right">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                @forelse($kelas->chapters->flatMap->quizzes as $quiz)
+                                @forelse($attemptedQuizzes as $quiz)
                                     @php
-                                        $att = $quizAttempts->get($quiz->id)?->sortByDesc('skor')->first();
+                                        $quizAttemptsList = $quizAttempts->get($quiz->id) ?? collect();
+                                        $att = $quizAttemptsList->sortByDesc('skor')->first();
                                         $passed = $att && $att->skor >= $quiz->kkm;
                                     @endphp
                                     <tr class="hover:bg-slate-50/50 transition">
-                                        <td class="px-5 py-3.5">
+                                        <td class="px-4 sm:px-5 py-3">
                                             <div class="font-bold text-slate-800">{{ $quiz->judul }}</div>
-                                            <div class="text-[11px] text-slate-400">{{ $quiz->chapter->judul ?? '-' }}</div>
+                                            <div class="text-[11px] text-slate-400 mt-0.5">
+                                                {{ $quiz->chapter->judul ?? '-' }}
+                                            </div>
                                         </td>
-                                        <td class="px-5 py-3.5 font-bold text-slate-600">{{ $quiz->kkm }}</td>
-                                        <td class="px-5 py-3.5 font-bold text-sm">
-                                            @if($att)
-                                                <span class="{{ $passed ? 'text-emerald-600' : 'text-amber-600' }}">
-                                                    {{ $att->skor }}
+                                        <td class="px-4 py-3">
+                                            <div class="inline-flex items-baseline gap-0.5 font-bold">
+                                                <span class="text-sm {{ $passed ? 'text-emerald-700' : 'text-amber-700' }}">{{ $att->skor }}</span>
+                                                <span class="text-[10px] text-slate-400">/100</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            @if($passed)
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                                    Lulus
                                                 </span>
                                             @else
-                                                <span class="text-slate-400 font-normal">Belum Dikerjakan</span>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-100">
+                                                    Remedial
+                                                </span>
                                             @endif
                                         </td>
-                                        <td class="px-5 py-3.5">
-                                            @if($att)
-                                                @if($passed)
-                                                    <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">Lulus KKM</span>
-                                                @else
-                                                    <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-100">Remedial</span>
-                                                @endif
-                                            @else
-                                                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-600">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-5 py-3.5 text-right">
-                                            <a href="{{ route('siswa.kuis.show', $quiz->id) }}" wire:navigate class="font-bold text-indigo-600 hover:text-indigo-800">
-                                                {{ $att ? 'Kerjakan Ulang' : 'Mulai Kuis' }}
+                                        <td class="px-4 sm:px-5 py-3 text-right">
+                                            <a href="{{ route('siswa.kuis.show', $quiz->id) }}" wire:navigate class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline">
+                                                <span>Lihat Kuis</span>
+                                                <span>&rarr;</span>
                                             </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-5 py-8 text-center text-slate-400 italic">Belum ada kuis evaluasi di kelas ini.</td>
+                                        <td colspan="4" class="px-4 py-6 text-center text-slate-400 italic">Belum ada kuis yang dikerjakan. Kerjakan kuis pada tab Materi Belajar.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -810,58 +740,65 @@ new class extends Component {
         @php
             $existingSub = $mySubmissions->get($selectedAssignment->id);
         @endphp
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl sm:rounded-3xl max-w-xl w-full p-6 sm:p-7 space-y-5 shadow-xl border border-slate-200/80">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
-                    <div>
-                        <span class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">Form Pengumpulan Tugas</span>
-                        <h3 class="text-base sm:text-lg font-black text-slate-900">{{ $selectedAssignment->judul }}</h3>
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3.5 sm:p-4">
+            <div class="bg-white rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-xl border border-slate-100 transition-all">
+                <!-- Header Modal -->
+                <div class="flex items-start justify-between gap-3 border-b border-slate-100 pb-3">
+                    <div class="space-y-0.5">
+                        <h3 class="text-sm sm:text-base font-bold text-slate-900 leading-snug">{{ $selectedAssignment->judul }}</h3>
+                        <p class="text-[11px] text-slate-500">Pengumpulan Tugas Siswa</p>
                     </div>
-                    <button wire:click="$set('showSubmitModal', false)" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer leading-none">&times;</button>
+                    <button wire:click="$set('showSubmitModal', false)" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition cursor-pointer text-lg leading-none shrink-0" aria-label="Tutup">&times;</button>
                 </div>
 
-                <!-- Informasi Soal Tugas -->
-                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2 text-xs">
-                    <div class="text-slate-700 leading-relaxed">
-                        {!! nl2br(e($selectedAssignment->deskripsi ?: 'Tidak ada instruksi khusus.')) !!}
-                    </div>
+                <!-- Informasi Soal & Lampiran Tugas -->
+                <div class="text-xs text-slate-600 bg-slate-50/70 rounded-xl p-3 border border-slate-100 space-y-2">
+                    <div class="leading-relaxed">{!! nl2br(e($selectedAssignment->deskripsi ?: 'Tidak ada instruksi khusus.')) !!}</div>
                     @if($selectedAssignment->file_lampiran)
-                        <div class="pt-2 border-t border-slate-200 flex items-center justify-between">
-                            <span class="text-slate-500">Berkas Lampiran Soal:</span>
-                            <a href="{{ asset('storage/' . $selectedAssignment->file_lampiran) }}" target="_blank" download class="font-bold text-indigo-600 hover:underline">
-                                Unduh Lampiran Soal &darr;
+                        <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                            <span class="text-slate-500">Berkas Soal:</span>
+                            <a href="{{ asset('storage/' . $selectedAssignment->file_lampiran) }}" target="_blank" download class="inline-flex items-center gap-1 font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                <span>Unduh Lampiran &darr;</span>
                             </a>
                         </div>
                     @endif
                 </div>
 
+                <!-- Nilai & Catatan Guru (Jika sudah dinilai) -->
                 @if($existingSub && $existingSub->status === 'graded')
-                    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1.5 text-xs">
+                    <div class="p-3 rounded-xl bg-emerald-50/60 border border-emerald-100 text-xs space-y-1.5">
                         <div class="flex items-center justify-between">
-                            <span class="font-bold text-emerald-900">Nilai yang Diperoleh:</span>
-                            <span class="text-lg font-black text-emerald-700">{{ $existingSub->nilai }} / 100</span>
+                            <span class="text-emerald-800 font-medium">Nilai Diperoleh:</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold text-xs bg-emerald-100 text-emerald-800">
+                                {{ $existingSub->nilai }} <span class="font-normal text-emerald-600 ml-1">/ 100</span>
+                            </span>
                         </div>
                         @if($existingSub->catatan_guru)
-                            <div class="text-emerald-800">
-                                <b>Catatan Guru:</b> {{ $existingSub->catatan_guru }}
+                            <div class="pt-1.5 border-t border-emerald-100 text-[11px] text-emerald-800 leading-relaxed">
+                                <span class="font-semibold text-emerald-900">Catatan Guru:</span> {{ $existingSub->catatan_guru }}
                             </div>
                         @endif
                     </div>
                 @endif
 
-                <form wire:submit="submitTugas" class="space-y-4">
+                <!-- Form Pengumpulan Jawaban -->
+                <form wire:submit="submitTugas" class="space-y-3.5">
                     <!-- Upload File Jawaban -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Unggah Berkas Jawaban (PDF / Word / ZIP / Gambar)</label>
-                        <input type="file" wire:model="fileJawaban" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-slate-200 rounded-xl p-1.5">
-                        <div wire:loading wire:target="fileJawaban" class="text-[11px] text-indigo-600 font-bold mt-1">Mengunggah berkas...</div>
-                        @error('fileJawaban') <span class="text-rose-500 text-[11px] font-semibold block mt-1">{{ $message }}</span> @enderror
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-xs font-semibold text-slate-700">Berkas Jawaban</label>
+                            <span class="text-[10px] text-slate-400">PDF, Word, Gambar, ZIP (Maks 20MB)</span>
+                        </div>
+                        <input type="file" wire:model="fileJawaban" class="w-full text-xs text-slate-600 file:mr-2.5 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer border border-slate-200 rounded-xl p-1 bg-white">
+                        <div wire:loading wire:target="fileJawaban" class="text-[11px] text-indigo-600 font-medium mt-1">Mengunggah berkas...</div>
+                        @error('fileJawaban') <span class="text-rose-500 text-[11px] font-medium block mt-1">{{ $message }}</span> @enderror
 
                         @if($existingSub && $existingSub->file_jawaban && !$fileJawaban)
-                            <div class="mt-2 text-xs text-slate-500 flex items-center gap-1.5">
-                                <span>Berkas yang sudah dikirim:</span>
-                                <a href="{{ asset('storage/' . $existingSub->file_jawaban) }}" target="_blank" class="font-bold text-indigo-600 hover:underline">
-                                    Lihat Berkas Terkirim &nearr;
+                            <div class="mt-1.5 text-[11px] text-slate-500 flex items-center gap-1.5">
+                                <span>Berkas terkirim:</span>
+                                <a href="{{ asset('storage/' . $existingSub->file_jawaban) }}" target="_blank" class="font-semibold text-indigo-600 hover:underline inline-flex items-center gap-0.5">
+                                    <span>Lihat Berkas</span> &nearr;
                                 </a>
                             </div>
                         @endif
@@ -869,24 +806,24 @@ new class extends Component {
 
                     <!-- Input Link Tugas Eksternal (Opsional) -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Atau Tautan Jawaban Eksternal (Google Drive / GitHub / dll)</label>
-                        <input type="url" wire:model="linkTugas" placeholder="https://drive.google.com/..." class="w-full text-xs rounded-xl border border-slate-200 px-3 py-2.5 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 text-slate-800">
-                        @error('linkTugas') <span class="text-rose-500 text-[11px] font-semibold block mt-1">{{ $message }}</span> @enderror
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan Jawaban <span class="font-normal text-slate-400">(Opsional)</span></label>
+                        <input type="url" wire:model="linkTugas" placeholder="https://drive.google.com/..." class="w-full text-xs rounded-xl border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 text-slate-800 placeholder-slate-400">
+                        @error('linkTugas') <span class="text-rose-500 text-[11px] font-medium block mt-1">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Catatan / Jawaban Teks -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Jawaban Tambahan / Uraian Jawaban</label>
-                        <textarea wire:model="catatanSiswa" rows="3" placeholder="Tuliskan catatan atau penjelasan jawabanmu di sini..." class="w-full text-xs rounded-xl border border-slate-200 px-3 py-2.5 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 text-slate-800"></textarea>
-                        @error('catatanSiswa') <span class="text-rose-500 text-[11px] font-semibold block mt-1">{{ $message }}</span> @enderror
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Tambahan <span class="font-normal text-slate-400">(Opsional)</span></label>
+                        <textarea wire:model="catatanSiswa" rows="2" placeholder="Tuliskan catatan singkat jika ada..." class="w-full text-xs rounded-xl border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 text-slate-800 placeholder-slate-400 resize-none"></textarea>
+                        @error('catatanSiswa') <span class="text-rose-500 text-[11px] font-medium block mt-1">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
-                        <button type="button" wire:click="$set('showSubmitModal', false)" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                    <div class="flex items-center justify-end gap-2 pt-2.5 border-t border-slate-100">
+                        <button type="button" wire:click="$set('showSubmitModal', false)" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
                             Tutup
                         </button>
-                        <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer">
+                        <button type="submit" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer">
                             <span>{{ $existingSub ? 'Perbarui Pengumpulan' : 'Kirim Jawaban' }}</span>
                         </button>
                     </div>

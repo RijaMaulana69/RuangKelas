@@ -19,7 +19,7 @@ new class extends Component {
     public string $mapel = '';
 
     #[Validate('required|string|max:50')]
-    public string $jenjang = 'Kelas 10';
+    public string $jenjang = 'Kelas 7';
 
     #[Validate('nullable|string|max:1000')]
     public string $deskripsi = '';
@@ -27,7 +27,7 @@ new class extends Component {
     public function openCreateModal(): void
     {
         $this->reset(['nama', 'mapel', 'deskripsi', 'kelasId']);
-        $this->jenjang = 'Kelas 10';
+        $this->jenjang = 'Kelas 7';
         $this->isEdit = false;
         $this->showModal = true;
     }
@@ -316,49 +316,52 @@ new class extends Component {
         @endif
 
         <!-- ============================================================ -->
-        <!-- MODAL BUAT / EDIT KELAS (INTUITIF & SEDERHANA)               -->
+        <!-- MODAL BUAT / EDIT KELAS (SEDERHANA & PROFESIONAL)           -->
         <!-- ============================================================ -->
         @if($showModal)
             <div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-                <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+                <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
-                        <div class="flex items-center gap-2.5">
-                            <div class="h-9 w-9 rounded-xl bg-indigo-50 text-indigo-600 font-bold flex items-center justify-center">
-                                🏫
-                            </div>
-                            <div>
-                                <h3 class="text-base font-black text-slate-900">
-                                    {{ $isEdit ? 'Ubah Informasi Kelas' : 'Buat Ruang Kelas Baru' }}
-                                </h3>
-                                <p class="text-xs text-slate-400">Isi data dasar mata pelajaran Anda</p>
-                            </div>
+                        <div>
+                            <h3 class="text-base font-black text-slate-900">
+                                {{ $isEdit ? 'Ubah Informasi Kelas' : 'Buat Kelas Baru' }}
+                            </h3>
+                            <p class="text-xs text-slate-500">Lengkapi data kelas untuk memulai proses pembelajaran</p>
                         </div>
-                        <button wire:click="$set('showModal', false)" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+                        <button type="button" wire:click="$set('showModal', false)" class="h-8 w-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center text-xl font-bold leading-none transition cursor-pointer">&times;</button>
                     </div>
 
                     <form wire:submit="simpan" class="space-y-4">
                         <!-- Nama Kelas -->
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kelas Pembelajaran *</label>
-                            <input type="text" wire:model="nama" placeholder="Contoh: Matematika Wajib Kelas 10, Biologi Sel X-A" class="w-full text-xs rounded-xl border border-slate-200 px-3.5 py-2.5 focus:ring-2 focus:ring-indigo-400 focus:outline-hidden" required>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Nama Kelas</label>
+                            <input type="text" 
+                                   wire:model="nama" 
+                                   placeholder="Contoh: Matematika Kelas 7A" 
+                                   class="w-full text-xs rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 text-slate-800 transition" 
+                                   required>
                             @error('nama') <span class="text-rose-500 text-[11px] font-semibold block mt-1">{{ $message }}</span> @enderror
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <!-- Mata Pelajaran -->
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Mata Pelajaran *</label>
-                                <input type="text" wire:model="mapel" placeholder="Matematika, Biologi, dll" class="w-full text-xs rounded-xl border border-slate-200 px-3.5 py-2.5 focus:ring-2 focus:ring-indigo-400 focus:outline-hidden" required>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Mata Pelajaran</label>
+                                <input type="text" 
+                                       wire:model="mapel" 
+                                       placeholder="Contoh: Matematika" 
+                                       class="w-full text-xs rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 text-slate-800 transition" 
+                                       required>
                                 @error('mapel') <span class="text-rose-500 text-[11px] font-semibold block mt-1">{{ $message }}</span> @enderror
                             </div>
 
-                            <!-- Tingkat Kelas -->
+                            <!-- Tingkat Kelas (Khusus SMP) -->
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Tingkatan Kelas *</label>
-                                <select wire:model="jenjang" class="w-full text-xs rounded-xl border border-slate-200 px-3.5 py-2.5 focus:ring-2 focus:ring-indigo-400 focus:outline-hidden">
-                                    <option value="Kelas 10">Kelas 10</option>
-                                    <option value="Kelas 11">Kelas 11</option>
-                                    <option value="Kelas 12">Kelas 12</option>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Tingkat Kelas</label>
+                                <select wire:model="jenjang" class="w-full text-xs rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 text-slate-800 transition">
+                                    <option value="Kelas 7">Kelas 7</option>
+                                    <option value="Kelas 8">Kelas 8</option>
+                                    <option value="Kelas 9">Kelas 9</option>
                                 </select>
                                 @error('jenjang') <span class="text-rose-500 text-[11px] font-semibold block mt-1">{{ $message }}</span> @enderror
                             </div>
@@ -366,18 +369,18 @@ new class extends Component {
 
                         <!-- Deskripsi -->
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi / Penjelasan Singkat (Opsional)</label>
-                            <textarea wire:model="deskripsi" rows="3" placeholder="Tuliskan petunjuk umum atau capaian belajar untuk siswa di kelas ini..." class="w-full text-xs rounded-xl border border-slate-200 px-3.5 py-2.5 focus:ring-2 focus:ring-indigo-400 focus:outline-hidden"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Deskripsi (Opsional)</label>
+                            <textarea wire:model="deskripsi" rows="3" placeholder="Tuliskan petunjuk umum atau capaian belajar untuk siswa di kelas ini..." class="w-full text-xs rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 text-slate-800 transition"></textarea>
                             @error('deskripsi') <span class="text-rose-500 text-[11px] font-semibold block mt-1">{{ $message }}</span> @enderror
                         </div>
 
                         <!-- Tombol Aksi Modal -->
-                        <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                            <button type="button" wire:click="$set('showModal', false)" class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition">
+                        <div class="pt-3 flex items-center justify-end gap-2.5 border-t border-slate-100">
+                            <button type="button" wire:click="$set('showModal', false)" class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
                                 Batal
                             </button>
-                            <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition flex items-center gap-1.5">
-                                <span>{{ $isEdit ? '💾 Simpan Perubahan' : '🚀 Buat Kelas Sekarang' }}</span>
+                            <button type="submit" class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white shadow-sm shadow-indigo-600/20 transition active:scale-95 cursor-pointer">
+                                <span>{{ $isEdit ? 'Simpan' : 'Buat Kelas' }}</span>
                             </button>
                         </div>
                     </form>

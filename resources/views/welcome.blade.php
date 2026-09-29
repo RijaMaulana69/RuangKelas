@@ -155,13 +155,13 @@
                                             </svg>
                                         </div>
                                         <div class="min-w-0">
-                                            <h3 class="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight leading-snug">Matematika Dasar</h3>
+                                            <h3 class="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight leading-snug">Bahasa Indonesia 9A</h3>
                                         </div>
                                     </div>
                                     <div class="shrink-0 text-right">
                                         <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/90 text-xs shadow-2xs transition-colors">
                                             <span class="text-slate-400 font-semibold text-[11px] uppercase tracking-wider">Kode</span>
-                                            <span class="font-mono font-black text-indigo-600 tracking-widest text-xs">MTK10A</span>
+                                            <span class="font-mono font-black text-indigo-600 tracking-widest text-xs">BIN9A</span>
                                         </div>
                                     </div>
                                 </div>
@@ -436,7 +436,7 @@
                         </div>
                         <h3 class="font-bold text-slate-900 text-sm sm:text-base">Masukkan Kode Kelas</h3>
                         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                            Cukup masukkan 6 digit kode kelas dari guru (misalnya <code class="font-mono font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">MTK10A</code>) untuk bergabung.
+                            Cukup masukkan 6 digit kode kelas dari guru (misalnya <code class="font-mono font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">BIN9A</code>) untuk bergabung.
                         </p>
                     </div>
 
@@ -481,7 +481,7 @@
                             <span class="faq-icon text-indigo-600 text-lg sm:text-xl font-bold w-6 text-center shrink-0">+</span>
                         </button>
                         <div class="faq-content text-xs sm:text-sm text-slate-600 leading-relaxed px-4 sm:px-5 pb-4 sm:pb-5 pt-1 border-t border-slate-100 hidden">
-                            Setiap kali seorang guru membuat kelas baru, sistem secara otomatis menghasilkan kode unik 6-karakter (misal: <code>MTK10A</code>). Guru cukup menyalin dan membagikan kode tersebut ke WhatsApp kelas, lalu siswa mengetikkannya pada menu "Gabung Kelas".
+                            Setiap kali seorang guru membuat kelas baru, sistem secara otomatis menghasilkan kode unik 6-karakter (misal: <code>BIN9A</code>). Guru cukup menyalin dan membagikan kode tersebut ke WhatsApp kelas, lalu siswa mengetikkannya pada menu "Gabung Kelas".
                         </div>
                     </div>
 

@@ -836,7 +836,7 @@ new class extends Component {
                     </button>
                     <button wire:click="$set('activeTab', 'nilai')"
                             class="py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition cursor-pointer {{ $activeTab === 'nilai' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
-                        Nilai
+                        Penilaian Siswa
                     </button>
                 </nav>
 
@@ -1087,21 +1087,23 @@ new class extends Component {
         <!-- ============================================================ -->
         @if ($activeTab === 'siswa')
             <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
-                <div class="px-6 py-4 sm:py-5 border-b border-slate-100 flex items-center justify-between gap-3 bg-white">
+                <div class="px-6 py-4 sm:py-5 border-b border-slate-100 bg-white">
                     <div>
                         <h3 class="font-extrabold text-base text-slate-900">Daftar Siswa</h3>
                         <p class="text-xs text-slate-500 mt-0.5">Pantau siswa yang bergabung dan tingkat progres belajarnya</p>
                     </div>
-                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200/60">
-                        {{ $siswaList->count() }} Siswa Terdaftar
-                    </span>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-50/80 text-slate-600 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
                             <tr>
-                                <th class="py-3 px-6">Siswa</th>
+                                <th class="py-3 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-6 text-center text-slate-400 font-bold">No</span>
+                                        <span>Siswa</span>
+                                    </div>
+                                </th>
                                 <th class="py-3 px-4 text-center">Bergabung</th>
                                 <th class="py-3 px-4">Progres Materi</th>
                                 <th class="py-3 px-4 text-center">Tugas Selesai</th>
@@ -1114,6 +1116,7 @@ new class extends Component {
                                 <tr class="hover:bg-slate-50/70 transition">
                                     <td class="py-3.5 px-6">
                                         <div class="flex items-center gap-3">
+                                            <span class="w-6 text-center font-bold text-xs text-slate-400 shrink-0">{{ $loop->iteration }}.</span>
                                             <div class="h-8 w-8 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-xs uppercase shrink-0">
                                                 {{ substr($s->name, 0, 2) }}
                                             </div>
@@ -1176,16 +1179,23 @@ new class extends Component {
         <!-- ============================================================ -->
         @if ($activeTab === 'nilai')
             <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
-                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
-                    <h3 class="font-extrabold text-base text-slate-900">Rekapitulasi Nilai</h3>
-                    <span class="text-xs font-bold text-slate-500">{{ $siswaList->count() }} Siswa</span>
+                <div class="px-6 py-4 sm:py-5 border-b border-slate-100 bg-white">
+                    <div>
+                        <h3 class="font-extrabold text-base text-slate-900">Penilaian Siswa</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Pantau akumulasi nilai tugas, hasil kuis, dan rata-rata capaian belajar siswa</p>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-50 text-slate-600 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
                             <tr>
-                                <th class="py-2.5 px-4 sticky left-0 bg-slate-50 z-20 border-r border-slate-200/80 whitespace-nowrap">Siswa</th>
+                                <th class="py-2.5 px-4 sticky left-0 bg-slate-50 z-20 border-r border-slate-200/80 whitespace-nowrap">
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="w-6 text-center text-slate-400 font-bold">No</span>
+                                        <span>Siswa</span>
+                                    </div>
+                                </th>
                                 <th class="py-2.5 px-3 text-center whitespace-nowrap">Nilai Akhir</th>
                                 <th class="py-2.5 px-3 text-center whitespace-nowrap">Rata Tugas</th>
                                 <th class="py-2.5 px-3 text-center whitespace-nowrap">Rata Kuis</th>
@@ -1205,8 +1215,13 @@ new class extends Component {
                             @forelse($siswaList as $s)
                                 <tr class="hover:bg-slate-50/70 transition">
                                     <td class="py-3 px-4 sticky left-0 bg-white z-10 whitespace-nowrap border-r border-slate-200/80">
-                                        <p class="font-bold text-xs text-slate-900">{{ $s->name }}</p>
-                                        <p class="text-[10px] text-slate-400 font-normal">{{ $s->email }}</p>
+                                        <div class="flex items-center gap-2.5">
+                                            <span class="w-6 text-center font-bold text-xs text-slate-400 shrink-0">{{ $loop->iteration }}.</span>
+                                            <div>
+                                                <p class="font-bold text-xs text-slate-900">{{ $s->name }}</p>
+                                                <p class="text-[10px] text-slate-400 font-normal">{{ $s->email }}</p>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="py-3 px-3 text-center whitespace-nowrap">
                                         <span class="font-extrabold text-xs {{ $s->nilai_akhir >= 75 ? 'text-emerald-700' : 'text-rose-600' }}">
@@ -1281,7 +1296,7 @@ new class extends Component {
 
                 <form wire:submit.prevent="simpanChapter" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Bab <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Bab</label>
                         <input type="text" wire:model="chapterJudul" placeholder="Contoh: Bab 1 - Pengenalan Aljabar" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 p-3">
                         @error('chapterJudul') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
@@ -1293,7 +1308,7 @@ new class extends Component {
 
                     <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
                         <button type="button" wire:click="$set('showChapterModal', false)" class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition">Batal</button>
-                        <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition">Simpan Bab</button>
+                        <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -1313,7 +1328,7 @@ new class extends Component {
 
                 <form wire:submit.prevent="simpanMaterial" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Materi <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Materi</label>
                         <input type="text" wire:model="materialJudul" placeholder="Contoh: Modul 1.1 Persamaan Linier" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 p-3">
                         @error('materialJudul') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
@@ -1361,7 +1376,7 @@ new class extends Component {
                     <!-- 2. Form Khusus Video YouTube Sederhana & Profesional -->
                     @if ($materialTipe === 'video')
                         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
-                            <label class="block text-xs font-bold text-slate-800">Tautan Video YouTube <span class="text-red-500">*</span></label>
+                            <label class="block text-xs font-bold text-slate-800">Tautan Video YouTube</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-4 w-4 text-red-600" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
@@ -1378,7 +1393,7 @@ new class extends Component {
                     <!-- 3. Form Khusus Link Eksternal -->
                     @if ($materialTipe === 'link')
                         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
-                            <label class="block text-xs font-bold text-slate-800">Alamat Tautan Sumber Belajar (URL) <span class="text-red-500">*</span></label>
+                            <label class="block text-xs font-bold text-slate-800">Alamat Tautan Sumber Belajar (URL)</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
@@ -1397,7 +1412,7 @@ new class extends Component {
 
                     <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
                         <button type="button" wire:click="$set('showMaterialModal', false)" class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition">Batal</button>
-                        <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition">Simpan Materi</button>
+                        <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -1424,7 +1439,7 @@ new class extends Component {
                 <form wire:submit.prevent="simpanAssignment" class="space-y-4">
                     <!-- Judul Tugas -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Tugas <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Judul Tugas</label>
                         <input type="text" wire:model="assignmentJudul" placeholder="Contoh: Latihan Soal Bab 1" class="w-full text-xs sm:text-sm rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 p-3">
                         @error('assignmentJudul') <span class="text-xs text-red-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
@@ -1470,7 +1485,7 @@ new class extends Component {
                     <!-- Footer Action -->
                     <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
                         <button type="button" wire:click="$set('showAssignmentModal', false)" class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">Batal</button>
-                        <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-xs transition active:scale-95 cursor-pointer">Simpan Tugas</button>
+                        <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-xs transition active:scale-95 cursor-pointer">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -1630,7 +1645,7 @@ new class extends Component {
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
                                             <div>
                                                 <label class="block text-xs font-bold text-slate-800 mb-1">
-                                                    Nilai Skor <span class="text-rose-500">*</span> <span class="text-slate-400 font-normal">(Maks: {{ $selectedAssignment->poin_maksimal }})</span>
+                                                    Nilai Skor <span class="text-slate-400 font-normal">(Maks: {{ $selectedAssignment->poin_maksimal }})</span>
                                                 </label>
                                                 <input type="number" wire:model="inputNilai" min="0" max="{{ $selectedAssignment->poin_maksimal }}" placeholder="0"
                                                     class="w-full text-base font-bold rounded-xl border border-slate-300 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 p-2.5 bg-white text-slate-900">
@@ -1650,7 +1665,7 @@ new class extends Component {
                                         </div>
                                         <div class="flex justify-end gap-2 pt-1">
                                             <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-xs transition cursor-pointer">
-                                                Simpan Nilai
+                                                Simpan
                                             </button>
                                         </div>
                                     </form>
@@ -1736,7 +1751,7 @@ new class extends Component {
 
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-800 mb-1">Judul Kuis <span class="text-rose-500">*</span></label>
+                                    <label class="block text-xs font-bold text-slate-800 mb-1">Judul Kuis</label>
                                     <input type="text" wire:model.live.debounce.300ms="quizJudul" placeholder="Contoh: Kuis Harian 1 — Operasi Aljabar"
                                         class="w-full text-xs sm:text-sm rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 p-3 bg-white text-slate-800 font-medium">
                                     @error('quizJudul') <span class="text-xs text-rose-500 mt-1 block font-semibold">{{ $message }}</span> @enderror
@@ -1744,13 +1759,13 @@ new class extends Component {
 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-800 mb-1">Durasi Pengerjaan (Menit) <span class="text-rose-500">*</span></label>
+                                        <label class="block text-xs font-bold text-slate-800 mb-1">Durasi Pengerjaan (Menit)</label>
                                         <input type="number" wire:model="quizDurasi" min="1" max="300"
                                             class="w-full text-xs sm:text-sm rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 p-2.5 bg-white text-slate-800 font-semibold">
                                         @error('quizDurasi') <span class="text-xs text-rose-500 mt-1 block font-semibold">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-800 mb-1">Nilai KKM <span class="text-rose-500">*</span></label>
+                                        <label class="block text-xs font-bold text-slate-800 mb-1">Nilai KKM</label>
                                         <input type="number" wire:model="quizKkm" min="0" max="100"
                                             class="w-full text-xs sm:text-sm rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 p-2.5 bg-white text-slate-800 font-semibold">
                                         @error('quizKkm') <span class="text-xs text-rose-500 mt-1 block font-semibold">{{ $message }}</span> @enderror
@@ -1830,7 +1845,7 @@ new class extends Component {
 
                                     <div>
                                         <label class="block text-xs font-bold text-slate-800 mb-1">
-                                            Pertanyaan Soal <span class="text-rose-500">*</span>
+                                            Pertanyaan Soal
                                         </label>
                                         <textarea wire:model="soalTeks" rows="3" placeholder="{{ $soalTipe === 'essay' ? 'Tuliskan pertanyaan esai di sini...' : 'Tuliskan butir soal pilihan ganda di sini...' }}"
                                             class="w-full text-xs sm:text-sm rounded-xl border border-slate-300 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 p-2.5 bg-white text-slate-800"></textarea>
@@ -1838,7 +1853,7 @@ new class extends Component {
                                     </div>
 
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-800 mb-1">Bobot Poin <span class="text-rose-500">*</span></label>
+                                        <label class="block text-xs font-bold text-slate-800 mb-1">Bobot Poin</label>
                                         <input type="number" wire:model="soalBobot" min="1" max="100" class="w-full text-xs font-bold rounded-xl border border-slate-300 p-2 focus:border-purple-600 focus:ring-1 focus:ring-purple-600">
                                         @error('soalBobot') <span class="text-xs text-rose-500 mt-1 block font-semibold">{{ $message }}</span> @enderror
                                     </div>
@@ -1883,7 +1898,7 @@ new class extends Component {
                                         <button type="submit" class="w-full py-2.5 px-4 bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs rounded-xl shadow-xs transition cursor-pointer flex items-center justify-center gap-2">
                                             @if($questionId)
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                <span>Simpan Perubahan Soal</span>
+                                                <span>Simpan</span>
                                             @else
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                                                 <span>Tambahkan Soal ke Kuis</span>
